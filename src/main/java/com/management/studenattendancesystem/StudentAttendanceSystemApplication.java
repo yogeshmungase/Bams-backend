@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.amdocs.amdil"})
-@EntityScan(basePackages = {"com.amdocs.amdil.base.db.model"})
+@ComponentScan(basePackages = {"com.management.studenattendancesystem"})
+@EntityScan(basePackages = {"com.management.studenattendancesystem.base.db.model"})
 public class StudentAttendanceSystemApplication {
 
 	public static void main(String[] args) {

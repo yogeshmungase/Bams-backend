@@ -2,7 +2,7 @@ package com.management.studenattendancesystem;
 
 
 //@SpringBootTest
-class GisApplicationTests {
+class StudentAttendanceSystemApplicationTests {
 
 	//@Test
 	void contextLoads() {
