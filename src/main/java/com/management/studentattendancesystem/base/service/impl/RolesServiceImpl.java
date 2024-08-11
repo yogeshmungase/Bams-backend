@@ -4,7 +4,7 @@ import com.management.studentattendancesystem.base.repository.PermissionReposito
 import com.management.studentattendancesystem.base.repository.RoleRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.service.RolesService;
-import com.management.studentattendancesystem.base.utils.constants.AMDILConstant;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import com.dox.ail.base.rest.model.Role;
 import jakarta.validation.Valid;
@@ -60,7 +60,7 @@ public class RolesServiceImpl implements RolesService {
 
     @Override
     public ResponseEntity<Void> deleteRole(String roleId) {
-        roleRepository.updateStatusByRoleId(Long.valueOf(roleId), AMDILConstant.INACTIVE);
+        roleRepository.updateStatusByRoleId(Long.valueOf(roleId), Constants.INACTIVE);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -68,7 +68,7 @@ public class RolesServiceImpl implements RolesService {
     @Override
     public ResponseEntity<Role> getRoleById(String roleId) {
 
-        com.management.studentattendancesystem.base.db.model.Role dbRole = roleRepository.findByIdAndStatus(Long.valueOf(roleId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.Role dbRole = roleRepository.findByIdAndStatus(Long.valueOf(roleId), Constants.ACTIVE);
         if (null != dbRole) {
             Role role = UserMapper.convertToRoleDto(dbRole);
             return new ResponseEntity<>(role, HttpStatus.OK);
@@ -78,7 +78,7 @@ public class RolesServiceImpl implements RolesService {
 
     @Override
     public ResponseEntity<List<Role>> getRoles() {
-        List<com.management.studentattendancesystem.base.db.model.Role> dbRoles = roleRepository.findAllByStatus(AMDILConstant.ACTIVE);
+        List<com.management.studentattendancesystem.base.db.model.Role> dbRoles = roleRepository.findAllByStatus(Constants.ACTIVE);
         if (!CollectionUtils.isEmpty(dbRoles)) {
             List<Role> rolesDto = UserMapper.convertToRoleDtos(dbRoles);
             return new ResponseEntity<>(rolesDto, HttpStatus.OK);
@@ -88,7 +88,7 @@ public class RolesServiceImpl implements RolesService {
 
     @Override
     public ResponseEntity<Role> updateRole(String roleId, Role role) {
-        com.management.studentattendancesystem.base.db.model.Role dbRole = roleRepository.findByIdAndStatus(Long.valueOf(roleId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.Role dbRole = roleRepository.findByIdAndStatus(Long.valueOf(roleId), Constants.ACTIVE);
         if (null == dbRole) {
             return new ResponseEntity<>(role, HttpStatus.BAD_REQUEST);
         }

@@ -1,7 +1,7 @@
 package com.management.studentattendancesystem.base.rest.mapper;
 
 import com.management.studentattendancesystem.base.db.model.User;
-import com.management.studentattendancesystem.base.utils.constants.AMDILConstant;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import com.dox.ail.base.rest.model.Role;
 import jakarta.validation.Valid;
@@ -113,11 +113,11 @@ public class UserMapper {
     public static com.management.studentattendancesystem.base.db.model.Permission convertToDBPermission(Permission permissionDto) {
         com.management.studentattendancesystem.base.db.model.Permission permission = new com.management.studentattendancesystem.base.db.model.Permission();
         permission.setName(permissionDto.getName());
-        permission.setViewAccess(AMDILConstant.YES);
-        permission.setAddAccess(AMDILConstant.YES);
-        permission.setUpdateAccess(AMDILConstant.YES);
-        permission.setDeleteAccess(AMDILConstant.YES);
-        permission.setStatus(AMDILConstant.ACTIVE);
+        permission.setViewAccess(Constants.YES);
+        permission.setAddAccess(Constants.YES);
+        permission.setUpdateAccess(Constants.YES);
+        permission.setDeleteAccess(Constants.YES);
+        permission.setStatus(Constants.ACTIVE);
         return permission;
     }
 
@@ -143,7 +143,7 @@ public class UserMapper {
 
         com.management.studentattendancesystem.base.db.model.Role role = new com.management.studentattendancesystem.base.db.model.Role();
         role.setName(roleDto.getName());
-        role.setStatus(AMDILConstant.ACTIVE);
+        role.setStatus(Constants.ACTIVE);
         role.setPermissions(convertToDBPermissions(roleDto.getPermissions()));
         return role;
     }

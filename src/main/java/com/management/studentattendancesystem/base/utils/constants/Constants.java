@@ -1,6 +1,6 @@
 package com.management.studentattendancesystem.base.utils.constants;
 
-public class AMDILConstant {
+public class Constants {
 
     public static final String SUCCESS = "SUCCESS";
 

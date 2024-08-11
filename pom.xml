@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.management</groupId>
-    <artifactId>studenattendancesystem</artifactId>
+    <artifactId>studentattendancesystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>StudentAttendanceSystem</name>
     <description>Project for management of student attendance</description>
@@ -105,6 +105,11 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.machinezoo.sourceafis</groupId>
+            <artifactId>sourceafis</artifactId>
+            <version>3.18.1</version>
         </dependency>
 
 

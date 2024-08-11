@@ -3,7 +3,7 @@ package com.management.studentattendancesystem.base.service.impl;
 import com.management.studentattendancesystem.base.repository.UserRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.service.UsersService;
-import com.management.studentattendancesystem.base.utils.constants.AMDILConstant;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Role;
 import com.dox.ail.base.rest.model.User;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class UsersServiceImpl implements UsersService {
 
         com.management.studentattendancesystem.base.db.model.User user = UserMapper.convertToDBUser(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        user.setStatus(AMDILConstant.ACTIVE);
+        user.setStatus(Constants.ACTIVE);
         userRepository.save(user);
         logger.info("Mapped User After save: {}", user);
         return new ResponseEntity<>(userRequest, HttpStatus.CREATED);
@@ -48,18 +48,18 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<Void> deleteUser(String userId) {
-        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), Constants.ACTIVE);
         if (dbUser == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        dbUser.setStatus(AMDILConstant.DELETE);
+        dbUser.setStatus(Constants.DELETE);
         userRepository.save(dbUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<List<User>> getAllUsers() {
-        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByStatus(AMDILConstant.ACTIVE);
+        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByStatus(Constants.ACTIVE);
         if (!CollectionUtils.isEmpty(allUser)) {
             return new ResponseEntity<>(UserMapper.convertToModelUsers(allUser), HttpStatus.OK);
         }
@@ -68,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<User> updateUser(String userId, User userRequest) {
-        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), Constants.ACTIVE);
 
         if (null == dbUser) {
             return new ResponseEntity<>(userRequest, HttpStatus.NO_CONTENT);
@@ -88,7 +88,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<User> getUserById(String userId) {
-        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), Constants.ACTIVE);
         if (null == dbUser) {
             return new ResponseEntity<>(new User(), HttpStatus.NO_CONTENT);
         }

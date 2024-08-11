@@ -1,6 +1,8 @@
 package com.management.studentattendancesystem.base.db.model;
 
 
+import com.management.studentattendancesystem.base.db.model.ControlFields;
+import com.management.studentattendancesystem.base.db.model.Role;
 import jakarta.persistence.*;
 
 import java.io.Serializable;

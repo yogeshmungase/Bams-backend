@@ -3,7 +3,7 @@ package com.management.studentattendancesystem.base.service.impl;
 import com.management.studentattendancesystem.base.repository.PermissionRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.service.PermissionsService;
-import com.management.studentattendancesystem.base.utils.constants.AMDILConstant;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public ResponseEntity<List<Permission>> getPermissions() {
-        List<com.management.studentattendancesystem.base.db.model.Permission> allPermissions = permissionRepository.findAllByStatus(AMDILConstant.ACTIVE);
+        List<com.management.studentattendancesystem.base.db.model.Permission> allPermissions = permissionRepository.findAllByStatus(Constants.ACTIVE);
         List<Permission> permissions = UserMapper.convertToPermissionDtos(allPermissions);
         if (!CollectionUtils.isEmpty(permissions)) {
             return new ResponseEntity<>(permissions, HttpStatus.OK);
@@ -43,7 +43,7 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public ResponseEntity<Permission> getPermissionById(String permissionId) {
-        com.management.studentattendancesystem.base.db.model.Permission dbPermission = permissionRepository.findByIdAndStatus(Long.valueOf(permissionId),AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.Permission dbPermission = permissionRepository.findByIdAndStatus(Long.valueOf(permissionId), Constants.ACTIVE);
         if (null != dbPermission) {
             Permission permission = UserMapper.convertToPermissionDto(dbPermission);
             return new ResponseEntity<>(permission, HttpStatus.OK);
@@ -53,13 +53,13 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     public ResponseEntity<Void> deletePermission(String permissionId) {
-        permissionRepository.updateStatusByPermissionId(Long.valueOf(permissionId), AMDILConstant.INACTIVE);
+        permissionRepository.updateStatusByPermissionId(Long.valueOf(permissionId), Constants.INACTIVE);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<Permission> updatePermission(String permissionId, Permission permission) {
-        com.management.studentattendancesystem.base.db.model.Permission dbPermission = permissionRepository.findByIdAndStatus(Long.valueOf(permissionId), AMDILConstant.ACTIVE);
+        com.management.studentattendancesystem.base.db.model.Permission dbPermission = permissionRepository.findByIdAndStatus(Long.valueOf(permissionId), Constants.ACTIVE);
         if (null == dbPermission) {
             return new ResponseEntity<>(permission, HttpStatus.BAD_REQUEST);
         }
