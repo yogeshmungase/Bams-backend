@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -107,33 +108,36 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ResponseEntity<GenericResponse> verifyStudentUsingFingerPrint(StudentDTO studentDto) {
         GenericResponse genericResponse = new GenericResponse();
-        Optional<Student> byId = studentRepository.findById(studentDto.getStudentId());
+        List<Student> studentList = studentRepository.findAll();
 
         FingerprintTemplate probe = new FingerprintTemplate(
                 new FingerprintImage(Base64.getDecoder().decode(studentDto.getThumb1())));
-        if (byId.isPresent()) {
 
-            FingerprintTemplate candidate = new FingerprintTemplate(
-                    new FingerprintImage(byId.get().getThumb1()));
+        for (Student student : studentList) {
+            if (null != student.getThumb1()) {
+                FingerprintTemplate candidate = new FingerprintTemplate(
+                        new FingerprintImage(student.getThumb1()));
 
-            FingerprintMatcher fingerprintMatcher = new FingerprintMatcher(probe);
+                FingerprintMatcher fingerprintMatcher = new FingerprintMatcher(probe);
 
-            double match = fingerprintMatcher.match(candidate);
-            // Output the result
-            logger.info("Similarity Score: {}", match);
+                double match = fingerprintMatcher.match(candidate);
+                // Output the result
+                logger.info("Similarity Score: {} and Student Id is {}", match, student.getId());
 
-            // Threshold for match (example value)
-            double threshold = 40;
-            if (match >= threshold) {
-                genericResponse.setStatus("SUCCESS");
-                genericResponse.setMessage("Fingerprints match!");
+                // Threshold for match (example value)
+                double threshold = 40;
+                if (match >= threshold) {
+                    logger.info("Matched student id {}", student.getId());
+                    genericResponse.setStatus("SUCCESS");
+                    genericResponse.setMessage("Fingerprints match!");
+                } else {
+                    genericResponse.setStatus("FAILED");
+                    genericResponse.setMessage("Fingerprints do not match.");
+                }
             } else {
                 genericResponse.setStatus("FAILED");
-                genericResponse.setMessage("Fingerprints do not match.");
+                genericResponse.setMessage("Record not found");
             }
-        } else {
-            genericResponse.setStatus("FAILED");
-            genericResponse.setMessage("Record not found");
         }
         return new ResponseEntity<>(genericResponse, HttpStatus.OK);
     }
