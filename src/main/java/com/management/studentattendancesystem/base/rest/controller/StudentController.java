@@ -54,5 +54,11 @@ public class StudentController {
         return studentService.getStudentThumbPdf(batchId);
     }
 
+    @PostMapping("/enhanceImage")
+    public ResponseEntity<StudentDTO> enhanceBitmapImage(@RequestBody StudentDTO student) {
+        logger.info("ENTER StudentController:enhanceBitmapImage() with details {}", student);
+        return studentService.enhanceBitmapImage(student);
+    }
+
 
 }

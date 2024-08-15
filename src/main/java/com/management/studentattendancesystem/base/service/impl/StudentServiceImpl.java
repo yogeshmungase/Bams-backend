@@ -9,6 +9,7 @@ import com.machinezoo.sourceafis.engine.transparency.TransparencyZip;
 import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.factory.HtmlToPdfConverter;
 import com.management.studentattendancesystem.base.factory.TemplateFactory;
+import com.management.studentattendancesystem.base.imgenhancer.GaborFilter;
 import com.management.studentattendancesystem.base.repository.StudentRepository;
 import com.management.studentattendancesystem.base.rest.mapper.Document;
 import com.management.studentattendancesystem.base.rest.mapper.StudentThumbDetails;
@@ -233,4 +234,15 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
+    public ResponseEntity<StudentDTO> enhanceBitmapImage(StudentDTO student) {
+        StudentDTO output = new StudentDTO();
+        if (null != student.getThumb1()) {
+            byte[] normalImageByteArray = Base64.getDecoder().decode(student.getThumb1());
+            byte[] enhancedImageByteArray = GaborFilter.enhanceImage(normalImageByteArray);
+            output.setThumb1(Base64.getEncoder().encodeToString(enhancedImageByteArray));
+            return new ResponseEntity<>(output, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
