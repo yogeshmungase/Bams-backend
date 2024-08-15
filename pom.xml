@@ -112,6 +112,33 @@
             <version>3.18.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.zefer.pd4ml</groupId>
+            <artifactId>pd4ml</artifactId>
+            <version>3.2.3fx5</version>
+            <classifier>pd4ml</classifier>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.w3c.css/sac -->
+        <dependency>
+            <groupId>org.w3c.css</groupId>
+            <artifactId>sac</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/css2parser/ss_css2 -->
+        <dependency>
+            <groupId>css2parser</groupId>
+            <artifactId>ss_css2</artifactId>
+            <version>0.9.3</version>
+            <classifier>ss_css2</classifier>
+        </dependency>
 
     </dependencies>
 

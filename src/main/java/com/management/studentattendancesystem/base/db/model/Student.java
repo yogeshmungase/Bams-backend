@@ -14,8 +14,11 @@ public class Student extends ControlFields implements Serializable {
     @Column(name = "student_id")
     private Long id;
 
+    @Column(name = "student_attendance_id")
+    private String studentAttendanceId;
+
     @Column(name = "batch_id")
-    private String batchId;
+    private Long batchId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -36,15 +39,31 @@ public class Student extends ControlFields implements Serializable {
     private String address;
 
     @Lob
+    @Column(name = "thumb1")
     private byte[] thumb1;
+
+
+    @Column(name = "thumb2")
     @Lob
     private byte[] thumb2;
+
+    @Column(name = "thumb3")
     @Lob
     private byte[] thumb3;
+
+
+    @Column(name = "thumb4")
     @Lob
     private byte[] thumb4;
+
+
+    @Column(name = "thumb5")
     @Lob
     private byte[] thumb5;
+
+
+    @Column(name = "is_active")
+    private boolean isActive;
 
     public Student() {
     }
@@ -57,13 +76,7 @@ public class Student extends ControlFields implements Serializable {
         this.id = id;
     }
 
-    public String getBatchId() {
-        return batchId;
-    }
 
-    public void setBatchId(String batchId) {
-        this.batchId = batchId;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -153,11 +166,37 @@ public class Student extends ControlFields implements Serializable {
         this.thumb5 = thumb5;
     }
 
+
+    public String getStudentAttendanceId() {
+        return studentAttendanceId;
+    }
+
+    public void setStudentAttendanceId(String studentAttendanceId) {
+        this.studentAttendanceId = studentAttendanceId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Long getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(Long batchId) {
+        this.batchId = batchId;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", batchId='" + batchId + '\'' +
+                ", studentAttendanceId='" + studentAttendanceId + '\'' +
+                ", btachId=" + batchId +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -169,6 +208,7 @@ public class Student extends ControlFields implements Serializable {
                 ", thumb3=" + Arrays.toString(thumb3) +
                 ", thumb4=" + Arrays.toString(thumb4) +
                 ", thumb5=" + Arrays.toString(thumb5) +
+                ", isActive=" + isActive +
                 '}';
     }
 }

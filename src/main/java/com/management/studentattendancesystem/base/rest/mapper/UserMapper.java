@@ -1,18 +1,27 @@
 package com.management.studentattendancesystem.base.rest.mapper;
 
+import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.db.model.User;
+import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
+import com.management.studentattendancesystem.base.service.impl.StudentServiceImpl;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import com.dox.ail.base.rest.model.Role;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
 
 public class UserMapper {
+
+    private static Logger logger = LoggerFactory.getLogger(UserMapper.class);
 
     public static User convertToDBUser(com.dox.ail.base.rest.model.User userRequest) {
 
@@ -180,5 +189,49 @@ public class UserMapper {
             }
         }
         return rolesDtos;
+    }
+
+    public static List<StudentDTO> getStudentDTO(List<Student> studentList) {
+        return null;
+    }
+
+    public static StudentThumbDetails getStudentThumbDetails(List<Student> studentList) {
+        StudentThumbDetails studentThumbDetails = new StudentThumbDetails();
+
+        List<StudentThumbProperties> studentThumbPropertiesList = new ArrayList<>();
+        for (Student student : studentList) {
+            StudentThumbProperties studentThumbProperties = new StudentThumbProperties();
+            if (null != student.getThumb1()) {
+                studentThumbProperties.setThumb1(Base64.getEncoder().encodeToString(student.getThumb1()));
+            }
+            if (null != student.getThumb2()) {
+                studentThumbProperties.setThumb2(Base64.getEncoder().encodeToString(student.getThumb2()));
+            }
+            if (null != student.getThumb3()) {
+                studentThumbProperties.setThumb3(Base64.getEncoder().encodeToString(student.getThumb3()));
+            }
+            if (null != student.getThumb4()) {
+                studentThumbProperties.setThumb4(Base64.getEncoder().encodeToString(student.getThumb4()));
+            }
+            if (null != student.getThumb5()) {
+                studentThumbProperties.setThumb5(Base64.getEncoder().encodeToString(student.getThumb5()));
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            if (!StringUtils.isEmpty(student.getFirstName())) {
+                stringBuilder.append(student.getFirstName()).append(" ");
+            }
+            if (!StringUtils.isEmpty(student.getLastName())) {
+                stringBuilder.append(student.getLastName()).append("-");
+            }
+            if (!StringUtils.isEmpty(student.getStudentAttendanceId())) {
+                stringBuilder.append(student.getStudentAttendanceId());
+            }
+            studentThumbProperties.setNameWithAttendanceId(stringBuilder.toString());
+            studentThumbPropertiesList.add(studentThumbProperties);
+        }
+        studentThumbDetails.setThumbPropertiesList(studentThumbPropertiesList);
+        logger.info("studentThumbDetails : {}", studentThumbDetails);
+        return studentThumbDetails;
+
     }
 }

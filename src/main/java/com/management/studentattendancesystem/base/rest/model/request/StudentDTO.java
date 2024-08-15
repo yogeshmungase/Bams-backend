@@ -3,7 +3,9 @@ package com.management.studentattendancesystem.base.rest.model.request;
 public class StudentDTO {
 
     private Long studentId;
-    private String batchId;
+
+    private String studentAttendanceId;
+    private Long batchId;
 
     private String firstName;
 
@@ -34,11 +36,11 @@ public class StudentDTO {
         this.studentId = studentId;
     }
 
-    public String getBatchId() {
+    public Long getBatchId() {
         return batchId;
     }
 
-    public void setBatchId(String batchId) {
+    public void setBatchId(Long batchId) {
         this.batchId = batchId;
     }
 
@@ -128,5 +130,33 @@ public class StudentDTO {
 
     public void setThumb5(String thumb5) {
         this.thumb5 = thumb5;
+    }
+
+    public String getStudentAttendanceId() {
+        return studentAttendanceId;
+    }
+
+    public void setStudentAttendanceId(String studentAttendanceId) {
+        this.studentAttendanceId = studentAttendanceId;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentDTO{" +
+                "studentId=" + studentId +
+                ", studentAttendanceId='" + studentAttendanceId + '\'' +
+                ", batchId='" + batchId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", address='" + address + '\'' +
+                ", thumb1='" + thumb1 + '\'' +
+                ", thumb2='" + thumb2 + '\'' +
+                ", thumb3='" + thumb3 + '\'' +
+                ", thumb4='" + thumb4 + '\'' +
+                ", thumb5='" + thumb5 + '\'' +
+                '}';
     }
 }

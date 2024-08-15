@@ -2,6 +2,8 @@ package com.management.studentattendancesystem.base.db.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "batch")
 public class Batch {
@@ -11,8 +13,17 @@ public class Batch {
     @Column(name = "batch_id")
     private Long id;
 
-    @JoinColumn(name = "batch_name")
+    @Column(name = "batch_name")
     private String batchName;
+
+    @Column(name = "startDate")
+    private Date startDate;
+
+    @Column(name = "endDate")
+    private Date endDate;
+
+    @Column(name = "is_active")
+    private boolean enabled;
 
     public Batch() {
     }
@@ -33,11 +44,38 @@ public class Batch {
         this.batchName = batchName;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public String toString() {
         return "Batch{" +
                 "id=" + id +
                 ", batchName='" + batchName + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", enabled=" + enabled +
                 '}';
     }
 }

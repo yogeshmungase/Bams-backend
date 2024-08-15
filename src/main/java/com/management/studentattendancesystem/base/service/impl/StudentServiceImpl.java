@@ -4,22 +4,38 @@ package com.management.studentattendancesystem.base.service.impl;
 import com.machinezoo.sourceafis.FingerprintImage;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
+import com.machinezoo.sourceafis.FingerprintTransparency;
+import com.machinezoo.sourceafis.engine.transparency.TransparencyZip;
 import com.management.studentattendancesystem.base.db.model.Student;
+import com.management.studentattendancesystem.base.factory.HtmlToPdfConverter;
+import com.management.studentattendancesystem.base.factory.TemplateFactory;
 import com.management.studentattendancesystem.base.repository.StudentRepository;
+import com.management.studentattendancesystem.base.rest.mapper.Document;
+import com.management.studentattendancesystem.base.rest.mapper.StudentThumbDetails;
+import com.management.studentattendancesystem.base.rest.mapper.ThumbPDFMapper;
+import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
+import jakarta.transaction.Transactional;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.text.ParseException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class StudentServiceImpl implements StudentService {
 
     private static Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
@@ -38,6 +54,7 @@ public class StudentServiceImpl implements StudentService {
             student.setMobile(studentDto.getMobile());
             student.setEmail(studentDto.getEmail());
             student.setBatchId(studentDto.getBatchId());
+            student.setStudentAttendanceId(studentDto.getStudentAttendanceId());
 
             if (null != studentDto.getThumb1()) {
                 student.setThumb1(Base64.getDecoder().decode(studentDto.getThumb1()));
@@ -73,6 +90,7 @@ public class StudentServiceImpl implements StudentService {
                 Student student = byId.get();
                 StudentDTO studentDTO = new StudentDTO();
                 studentDTO.setBatchId(student.getBatchId());
+                studentDTO.setStudentAttendanceId(student.getStudentAttendanceId());
                 studentDTO.setFirstName(student.getFirstName());
                 studentDTO.setMiddleName(student.getMiddleName());
                 studentDTO.setLastName(student.getLastName());
@@ -141,4 +159,78 @@ public class StudentServiceImpl implements StudentService {
         }
         return new ResponseEntity<>(genericResponse, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<List<StudentDTO>> getStudentListAgainstBatch(Long batchId) {
+        List<Student> studentList = studentRepository.findAllByBatchId(batchId);
+
+        if (!CollectionUtils.isEmpty(studentList)) {
+            List<StudentDTO> studentDTOS = UserMapper.getStudentDTO(studentList);
+            return new ResponseEntity<>(studentDTOS, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<Document> getStudentThumbPdf(Long batchId) {
+
+        List<Student> studentList = studentRepository.findAllByBatchId(batchId);
+        if (!CollectionUtils.isEmpty(studentList)) {
+            logger.info("Student record count is :{} against Batch Id is : {} ",studentList.size(),batchId);
+            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList);
+            String studentThumbHtmlDocument = getStudentThumbHtmlDocument(studentThumbDetails, "templates/Thumb.vm");
+
+            byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm");
+            String base64String = null;
+            if (null != bytes) {
+                //encode pdf bytes to base64
+                base64String = new String(Base64.getEncoder().encode(bytes));
+            }
+            Document document = new Document();
+            document.setDocId("A101");
+            document.setDocName("StudentThumbPDF");
+            document.setStatus("FAILED");
+            if (null != base64String) {
+                document.setStatus("SUCCESS");
+                document.setBase64Code(base64String);
+            }
+            return new ResponseEntity<>(document, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    private String getStudentThumbHtmlDocument(StudentThumbDetails studentThumbDetails, String templatePath) {
+
+        Template template = new Template();
+        StringWriter writer = null;
+
+        try {
+            TemplateFactory templatesFactory = new TemplateFactory();
+
+            template = templatesFactory.fetchTemplate(templatePath);
+
+            VelocityContext velocityContext = ThumbPDFMapper.mapStudentThumbDetails(studentThumbDetails);
+
+            writer = new StringWriter();
+            template.merge(velocityContext, writer);
+
+            return writer.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+
+        } finally {
+            writer.flush();
+            try {
+                if (null != writer)
+                    writer.close();
+            } catch (IOException e) {
+            }
+
+        }
+    }
+
 }
