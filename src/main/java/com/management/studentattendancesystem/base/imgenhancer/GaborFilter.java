@@ -1,12 +1,9 @@
 package com.management.studentattendancesystem.base.imgenhancer;
 
-import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,13 +37,13 @@ public class GaborFilter {
             array = shar.img_arr(img);
             long process = System.currentTimeMillis();
 
-            logger.info("height : {} ,width : {}",height,width);
+            logger.info("height : {} ,width : {}", height, width);
 
             clear_arr = shar.Clear(array, 17, width, height);
 
             filter_arr = gf.orientation(clear_arr, width, height, 17, 7);
             long endtime = System.currentTimeMillis();
-            logger.info("Time taken to enhance image : {}",(endtime - process));
+            logger.info("Time taken to enhance image : {}", (endtime - process));
             BufferedImage enhancedImage = shar.arr_img(filter_arr, width, height);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(enhancedImage, "bmp", baos);
