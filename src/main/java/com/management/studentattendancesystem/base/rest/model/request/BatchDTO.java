@@ -1,35 +1,24 @@
-package com.management.studentattendancesystem.base.db.model;
+package com.management.studentattendancesystem.base.rest.model.request;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
 
-@Entity
-@Table(name = "batch")
-public class Batch {
+public class BatchDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "batch_id")
     private Long id;
-
-    @Column(name = "institution_id")
-    private String institutionId;
-
-    @Column(name = "batch_name")
     private String batchName;
 
-    @Column(name = "startDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/YYYY")
     private Date startDate;
 
-    @Column(name = "endDate")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/YYYY")
     private Date endDate;
 
-    @Column(name = "is_active")
-    private boolean enabled;
+    private String institutionId;
 
-    public Batch() {
-    }
+    private boolean enabled;
 
     public Long getId() {
         return id;
@@ -71,7 +60,6 @@ public class Batch {
         this.enabled = enabled;
     }
 
-
     public String getInstitutionId() {
         return institutionId;
     }
@@ -82,12 +70,12 @@ public class Batch {
 
     @Override
     public String toString() {
-        return "Batch{" +
+        return "BatchDTO{" +
                 "id=" + id +
-                ", institutionId='" + institutionId + '\'' +
                 ", batchName='" + batchName + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", institutionId='" + institutionId + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

@@ -2,6 +2,7 @@ package com.management.studentattendancesystem.base.service.impl;
 
 import com.management.studentattendancesystem.base.rest.mapper.Document;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
+import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -19,4 +20,5 @@ public interface StudentService {
     ResponseEntity<Document> getStudentThumbPdf(Long batchId);
 
     ResponseEntity<StudentDTO> enhanceBitmapImage(StudentDTO student);
+
 }

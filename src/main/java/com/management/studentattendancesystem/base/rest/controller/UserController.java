@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(value = "/api/v1/amdil/users")
+@RequestMapping(value = "/api/v1/sas/users")
 public class UserController implements UsersApi {
 
     private static Logger logger = LoggerFactory.getLogger(UserController.class);

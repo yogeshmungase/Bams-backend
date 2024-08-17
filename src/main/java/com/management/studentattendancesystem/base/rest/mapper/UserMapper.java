@@ -1,9 +1,10 @@
 package com.management.studentattendancesystem.base.rest.mapper;
 
+import com.management.studentattendancesystem.base.db.model.Batch;
 import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.db.model.User;
+import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
-import com.management.studentattendancesystem.base.service.impl.StudentServiceImpl;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import com.dox.ail.base.rest.model.Role;
@@ -232,6 +233,18 @@ public class UserMapper {
         studentThumbDetails.setThumbPropertiesList(studentThumbPropertiesList);
         logger.info("studentThumbDetails : {}", studentThumbDetails);
         return studentThumbDetails;
+
+    }
+
+    public static Batch mapBatchDetails(BatchDTO batchDTO) {
+        Batch batch = new Batch();
+        batch.setBatchName(batchDTO.getBatchName());
+        batch.setEnabled(true);
+        batch.setStartDate(batchDTO.getStartDate());
+        batch.setEndDate(batchDTO.getEndDate());
+        batch.setInstitutionId(batchDTO.getInstitutionId());
+        logger.info("Inside mapBatchDetails() with details : {}",batchDTO);
+        return batch;
 
     }
 }
