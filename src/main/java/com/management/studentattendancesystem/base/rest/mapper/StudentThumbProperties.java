@@ -61,11 +61,6 @@ public class StudentThumbProperties {
     @Override
     public String toString() {
         return "StudentThumbProperties{" +
-                "thumb1='" + thumb1 + '\'' +
-                ", thumb2='" + thumb2 + '\'' +
-                ", thumb3='" + thumb3 + '\'' +
-                ", thumb4='" + thumb4 + '\'' +
-                ", thumb5='" + thumb5 + '\'' +
                 ", nameWithAttendanceId='" + nameWithAttendanceId + '\'' +
                 '}';
     }

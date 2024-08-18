@@ -3,6 +3,7 @@ package com.management.studentattendancesystem.base.rest.mapper;
 import com.management.studentattendancesystem.base.db.model.Batch;
 import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.db.model.User;
+import com.management.studentattendancesystem.base.imgenhancer.GaborFilter;
 import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
@@ -14,6 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.StringUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -38,7 +45,7 @@ public class UserMapper {
 
     public static com.dox.ail.base.rest.model.User convertToModelUser(User dbUser) {
 
-        com.dox.ail.base.rest.model.User user= new com.dox.ail.base.rest.model.User();
+        com.dox.ail.base.rest.model.User user = new com.dox.ail.base.rest.model.User();
         user.setUsername(dbUser.getUsername());
         user.setPassword(dbUser.getPassword());
         user.setEmail(dbUser.getEmail());
@@ -66,12 +73,12 @@ public class UserMapper {
     private static void setModelUserRoles(com.dox.ail.base.rest.model.User modeluser, User dbUser) {
 
         Collection<com.management.studentattendancesystem.base.db.model.Role> dbRoles = dbUser.getRoles();
-        List<com.dox.ail.base.rest.model.Role> modelRoles= new ArrayList<>();
+        List<com.dox.ail.base.rest.model.Role> modelRoles = new ArrayList<>();
         for (com.management.studentattendancesystem.base.db.model.Role dbRole : dbRoles) {
-            com.dox.ail.base.rest.model.Role modelRole= new Role();
+            com.dox.ail.base.rest.model.Role modelRole = new Role();
             modelRole.setId(String.valueOf(dbRole.getId()));
             modelRole.setName(dbRole.getName());
-            setModelRolePermissions(modelRole,dbRole.getPermissions());
+            setModelRolePermissions(modelRole, dbRole.getPermissions());
             modelRoles.add(modelRole);
         }
         modeluser.setRoles(modelRoles);
@@ -140,7 +147,7 @@ public class UserMapper {
 
     public static List<Permission> convertToPermissionDtos(List<com.management.studentattendancesystem.base.db.model.Permission> allPermissions) {
         List<Permission> permissionDtos = new ArrayList<>();
-        if(!CollectionUtils.isEmpty(allPermissions)) {
+        if (!CollectionUtils.isEmpty(allPermissions)) {
             for (com.management.studentattendancesystem.base.db.model.Permission dbPermission : allPermissions) {
                 permissionDtos.add(convertToPermissionDto(dbPermission));
             }
@@ -193,29 +200,81 @@ public class UserMapper {
     }
 
     public static List<StudentDTO> getStudentDTO(List<Student> studentList) {
-        return null;
+        List<StudentDTO> studentDTOS = new ArrayList<>();
+        for (Student student : studentList) {
+            StudentDTO dto = new StudentDTO();
+
+            dto.setStudentId(student.getId());
+            dto.setBatchId(student.getBatchId());
+            dto.setStudentAttendanceId(student.getStudentAttendanceId());
+            dto.setAddress(student.getAddress());
+            dto.setFirstName(student.getFirstName());
+            dto.setMiddleName(student.getMiddleName());
+            dto.setLastName(student.getLastName());
+            dto.setMobile(student.getMobile());
+            dto.setEmail(student.getEmail());
+
+            if (null != student.getThumb1()) {
+                dto.setThumb1(Base64.getEncoder().encodeToString(student.getThumb1()));
+            }
+            if (null != student.getThumb2()) {
+                dto.setThumb2(Base64.getEncoder().encodeToString(student.getThumb2()));
+            }
+            if (null != student.getThumb3()) {
+                dto.setThumb3(Base64.getEncoder().encodeToString(student.getThumb3()));
+            }
+            if (null != student.getThumb4()) {
+                dto.setThumb4(Base64.getEncoder().encodeToString(student.getThumb4()));
+            }
+            if (null != student.getThumb5()) {
+                dto.setThumb5(Base64.getEncoder().encodeToString(student.getThumb5()));
+            }
+            studentDTOS.add(dto);
+        }
+
+        return studentDTOS;
     }
 
-    public static StudentThumbDetails getStudentThumbDetails(List<Student> studentList) {
+    public static StudentThumbDetails getStudentThumbDetails(List<Student> studentList, String imageType) {
         StudentThumbDetails studentThumbDetails = new StudentThumbDetails();
 
         List<StudentThumbProperties> studentThumbPropertiesList = new ArrayList<>();
         for (Student student : studentList) {
             StudentThumbProperties studentThumbProperties = new StudentThumbProperties();
             if (null != student.getThumb1()) {
-                studentThumbProperties.setThumb1(Base64.getEncoder().encodeToString(student.getThumb1()));
+                if ("enhanced".equalsIgnoreCase(imageType)) {
+                    studentThumbProperties.setThumb1(Base64.getEncoder().encodeToString(GaborFilter.enhanceImage(student.getThumb1())));
+                } else {
+                    studentThumbProperties.setThumb1(getBitMapBase64String(student.getThumb1()));
+                }
             }
             if (null != student.getThumb2()) {
-                studentThumbProperties.setThumb2(Base64.getEncoder().encodeToString(student.getThumb2()));
+                if ("enhanced".equalsIgnoreCase(imageType)) {
+                    studentThumbProperties.setThumb2(Base64.getEncoder().encodeToString(GaborFilter.enhanceImage(student.getThumb2())));
+                } else {
+                    studentThumbProperties.setThumb2(getBitMapBase64String(student.getThumb2()));
+                }
             }
             if (null != student.getThumb3()) {
-                studentThumbProperties.setThumb3(Base64.getEncoder().encodeToString(student.getThumb3()));
+                if ("enhanced".equalsIgnoreCase(imageType)) {
+                    studentThumbProperties.setThumb3(Base64.getEncoder().encodeToString(GaborFilter.enhanceImage(student.getThumb3())));
+                } else {
+                    studentThumbProperties.setThumb3(getBitMapBase64String(student.getThumb3()));
+                }
             }
             if (null != student.getThumb4()) {
-                studentThumbProperties.setThumb4(Base64.getEncoder().encodeToString(student.getThumb4()));
+                if ("enhanced".equalsIgnoreCase(imageType)) {
+                    studentThumbProperties.setThumb4(Base64.getEncoder().encodeToString(GaborFilter.enhanceImage(student.getThumb4())));
+                } else {
+                    studentThumbProperties.setThumb4(getBitMapBase64String(student.getThumb4()));
+                }
             }
             if (null != student.getThumb5()) {
-                studentThumbProperties.setThumb5(Base64.getEncoder().encodeToString(student.getThumb5()));
+                if ("enhanced".equalsIgnoreCase(imageType)) {
+                    studentThumbProperties.setThumb5(Base64.getEncoder().encodeToString(GaborFilter.enhanceImage(student.getThumb5())));
+                } else {
+                    studentThumbProperties.setThumb5(getBitMapBase64String(student.getThumb5()));
+                }
             }
             StringBuilder stringBuilder = new StringBuilder();
             if (!StringUtils.isEmpty(student.getFirstName())) {
@@ -236,6 +295,27 @@ public class UserMapper {
 
     }
 
+
+    public static String getBitMapBase64String(byte[] bytes) {
+        ByteArrayOutputStream baos = null;
+        try {
+            BufferedImage enhancedImage = ImageIO.read(new ByteArrayInputStream(bytes));
+            baos = new ByteArrayOutputStream();
+            ImageIO.write(enhancedImage, "bmp", baos);
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
+        } catch (Exception e) {
+            logger.error("Exception occur during to get getBitMapBase64String");
+            return null;
+        } finally {
+            try {
+                baos.close();
+            } catch (Exception e) {
+
+            }
+            return null;
+        }
+    }
+
     public static Batch mapBatchDetails(BatchDTO batchDTO) {
         Batch batch = new Batch();
         batch.setBatchName(batchDTO.getBatchName());
@@ -243,8 +323,9 @@ public class UserMapper {
         batch.setStartDate(batchDTO.getStartDate());
         batch.setEndDate(batchDTO.getEndDate());
         batch.setInstitutionId(batchDTO.getInstitutionId());
-        logger.info("Inside mapBatchDetails() with details : {}",batchDTO);
+        logger.info("Inside mapBatchDetails() with details : {}", batchDTO);
         return batch;
 
     }
 }
+

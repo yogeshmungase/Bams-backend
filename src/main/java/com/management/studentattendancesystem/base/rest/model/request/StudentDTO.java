@@ -19,6 +19,8 @@ public class StudentDTO {
 
     private String address;
 
+    private boolean active;
+
     private String thumb1;
 
     private String thumb2;
@@ -140,23 +142,27 @@ public class StudentDTO {
         this.studentAttendanceId = studentAttendanceId;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public String toString() {
         return "StudentDTO{" +
                 "studentId=" + studentId +
                 ", studentAttendanceId='" + studentAttendanceId + '\'' +
-                ", batchId='" + batchId + '\'' +
+                ", batchId=" + batchId +
                 ", firstName='" + firstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", address='" + address + '\'' +
-                ", thumb1='" + thumb1 + '\'' +
-                ", thumb2='" + thumb2 + '\'' +
-                ", thumb3='" + thumb3 + '\'' +
-                ", thumb4='" + thumb4 + '\'' +
-                ", thumb5='" + thumb5 + '\'' +
+                ", active=" + active +
                 '}';
     }
 }

@@ -203,11 +203,6 @@ public class Student extends ControlFields implements Serializable {
                 ", email='" + email + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", address='" + address + '\'' +
-                ", thumb1=" + Arrays.toString(thumb1) +
-                ", thumb2=" + Arrays.toString(thumb2) +
-                ", thumb3=" + Arrays.toString(thumb3) +
-                ", thumb4=" + Arrays.toString(thumb4) +
-                ", thumb5=" + Arrays.toString(thumb5) +
                 ", isActive=" + isActive +
                 '}';
     }

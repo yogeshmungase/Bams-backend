@@ -4,8 +4,6 @@ package com.management.studentattendancesystem.base.service.impl;
 import com.machinezoo.sourceafis.FingerprintImage;
 import com.machinezoo.sourceafis.FingerprintMatcher;
 import com.machinezoo.sourceafis.FingerprintTemplate;
-import com.machinezoo.sourceafis.FingerprintTransparency;
-import com.machinezoo.sourceafis.engine.transparency.TransparencyZip;
 import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.factory.HtmlToPdfConverter;
 import com.management.studentattendancesystem.base.factory.TemplateFactory;
@@ -17,12 +15,15 @@ import com.management.studentattendancesystem.base.rest.mapper.ThumbPDFMapper;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
+import com.management.studentattendancesystem.base.rest.model.request.StudentDTOPagination;
 import jakarta.transaction.Transactional;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.ParseException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +56,7 @@ public class StudentServiceImpl implements StudentService {
             student.setEmail(studentDto.getEmail());
             student.setBatchId(studentDto.getBatchId());
             student.setStudentAttendanceId(studentDto.getStudentAttendanceId());
+            student.setActive(true);
 
             if (null != studentDto.getThumb1()) {
                 student.setThumb1(Base64.getDecoder().decode(studentDto.getThumb1()));
@@ -75,6 +76,8 @@ public class StudentServiceImpl implements StudentService {
 
             studentRepository.save(student);
             logger.info("Saving student with details {}", student);
+            studentDto.setStudentId(student.getId());
+            studentDto.setActive(student.isActive());
             return new ResponseEntity<>(studentDto, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,25 +165,77 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<List<StudentDTO>> getStudentListAgainstBatch(Long batchId) {
-        List<Student> studentList = studentRepository.findAllByBatchId(batchId);
+    public ResponseEntity<StudentDTOPagination> getStudentListAgainstBatch(Long batchId, Integer offset, Integer limit) {
+        logger.info("inside getStudentListAgainstBatch() with batchId : {}", batchId);
 
-        if (!CollectionUtils.isEmpty(studentList)) {
-            List<StudentDTO> studentDTOS = UserMapper.getStudentDTO(studentList);
-            return new ResponseEntity<>(studentDTOS, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        // if limit is zero then set limit and offset
+        if (limit == 0) {
+            limit = 10;
+            if (offset > 0) {
+                offset = 0;
+            }
         }
 
+        String sortBy = "id";
+        Pageable paging = PageRequest.of(offset, limit);
+        logger.info("pagination : {}",paging);
+
+        List<Student> studentList = studentRepository.findAllByBatchId(batchId,paging);
+        if (!CollectionUtils.isEmpty(studentList)) {
+            StudentDTOPagination studentDTOPagination = new StudentDTOPagination();
+            studentDTOPagination.setStudentDTOS(UserMapper.getStudentDTO(studentList));
+            setPaginationParameter(studentDTOPagination, offset, limit, batchId);
+            return new ResponseEntity<>(studentDTOPagination, HttpStatus.OK);
+        } else {
+            logger.error("No student details found against batchId : {}", batchId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    private void setPaginationParameter(StudentDTOPagination studentDTOPagination, Integer offset, Integer limit, Long batchId) {
+
+        Integer totalStudentCount = studentRepository.getTotalStudentCountAgainstBatch(batchId);
+        studentDTOPagination.setTotalRecords(totalStudentCount);
+        studentDTOPagination.setPageSize(10);
+
+        //means calling  first time
+        if (offset == 0) {
+            if (totalStudentCount > studentDTOPagination.getStudentDTOS().size()) {
+                Integer nextOffset = offset + studentDTOPagination.getStudentDTOS().size();
+                studentDTOPagination.setNextOffset(nextOffset);
+                studentDTOPagination.setNextLimit(studentDTOPagination.getPageSize());
+                studentDTOPagination.setNextPagesAvailable(true);
+            }else{
+                studentDTOPagination.setNextOffset(0);
+                studentDTOPagination.setNextLimit(0);
+                studentDTOPagination.setNextPagesAvailable(false);
+            }
+
+        } else if (totalStudentCount > offset) {
+            Integer nextOffset = offset + studentDTOPagination.getStudentDTOS().size();
+
+            if (totalStudentCount > nextOffset) {
+                studentDTOPagination.setNextPagesAvailable(true);
+                studentDTOPagination.setNextOffset(nextOffset);
+                studentDTOPagination.setNextLimit(studentDTOPagination.getPageSize());
+            } else {
+                studentDTOPagination.setNextOffset(nextOffset);
+                studentDTOPagination.setNextLimit(0);
+                studentDTOPagination.setNextPagesAvailable(false);
+            }
+        }
+
+        logger.info("Parameter for Pagination : Total student count : {} , offset : {} ,limit : {} against batchId {}", totalStudentCount,
+                studentDTOPagination.getNextOffset(), studentDTOPagination.getNextLimit(), batchId);
     }
 
     @Override
-    public ResponseEntity<Document> getStudentThumbPdf(Long batchId) {
+    public ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType) {
 
         List<Student> studentList = studentRepository.findAllByBatchId(batchId);
         if (!CollectionUtils.isEmpty(studentList)) {
             logger.info("Student record count is :{} against Batch Id is : {} ",studentList.size(),batchId);
-            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList);
+            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList,imageType);
             String studentThumbHtmlDocument = getStudentThumbHtmlDocument(studentThumbDetails, "templates/Thumb.vm");
 
             byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm");

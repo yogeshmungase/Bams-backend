@@ -159,26 +159,25 @@
 
             #if ($studentThumbDetails)
                 #set ($boxCounter=1)
-                #set ($maxLimit=24)
                 #foreach ($thumbDetails in $studentThumbDetails)
                     #if ($boxCounter<=$studentThumbDetails.size())
 
                         <table width="100%">
                                 <tr>
                                     <td width="25%">
-                                        <img src="data:image/png;base64,$thumbDetails.thumb1" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb1" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
                                     </td>
                                     <td width="25%">
-                                        <img src="data:image/png;base64,$thumbDetails.thumb2" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb2" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
                                     </td>
                                     <td width="25%">
-                                        <img src="data:image/png;base64,$thumbDetails.thumb3" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb3" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
                                     </td>
                                     <td width="25%">
-                                        <img src="data:image/png;base64,$thumbDetails.thumb4" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb4" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
                                     </td>
                                     <td width="25%">
-                                        <img src="data:image/png;base64,$thumbDetails.thumb5" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb5" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
                                     </td>
 
                                 </tr>

@@ -1,5 +1,6 @@
 package com.management.studentattendancesystem.base.imgenhancer;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,14 +8,16 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.Base64;
 
 public class GaborFilter {
 
     private static Logger logger = LoggerFactory.getLogger(GaborFilter.class);
 
     public static byte[] enhanceImage(byte[] byteCode) {
-
+;
         BufferedImage img = null;
 
         try {
@@ -35,6 +38,7 @@ public class GaborFilter {
 
             estimate gf = new estimate();
             array = shar.img_arr(img);
+
             long process = System.currentTimeMillis();
 
             logger.info("height : {} ,width : {}", height, width);
@@ -54,4 +58,5 @@ public class GaborFilter {
             return null;
         }
     }
+
 }
