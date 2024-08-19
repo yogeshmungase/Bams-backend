@@ -306,13 +306,6 @@ public class UserMapper {
         } catch (Exception e) {
             logger.error("Exception occur during to get getBitMapBase64String");
             return null;
-        } finally {
-            try {
-                baos.close();
-            } catch (Exception e) {
-
-            }
-            return null;
         }
     }
 
