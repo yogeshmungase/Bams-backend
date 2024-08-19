@@ -1,6 +1,5 @@
 package com.management.studentattendancesystem.base.imgenhancer;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,16 +7,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
 
 public class GaborFilter {
 
-    private static Logger logger = LoggerFactory.getLogger(GaborFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(GaborFilter.class);
 
     public static byte[] enhanceImage(byte[] byteCode) {
-;
         BufferedImage img = null;
 
         try {
@@ -26,31 +22,28 @@ public class GaborFilter {
             img = ImageIO.read(byteArrayInputStream);
             int width = img.getWidth(null);
             int height = img.getHeight(null);
-            sharpen_image shar = new sharpen_image();
+            sharpen_image sharpenImage = new sharpen_image();
 
-            int[][] array = new int[height + 100][width + 100];
-            int[][] filter_arr = new int[height + 100][width + 100];
-            int[][] norm_arr = new int[height + 100][width + 100];
-            int[][] sharp_arr = new int[height + 100][width + 100];
-            int[][] clear_arr = new int[height + 100][width + 100];
-            int[][] foreground_arr = new int[height + 100][width + 100];
-
+            int[][] array = null;
+            int[][] filter_arr = null;
+            int[][] clear_arr = null;
 
             estimate gf = new estimate();
-            array = shar.img_arr(img);
+            array = sharpenImage.img_arr(img);
 
             long process = System.currentTimeMillis();
 
             logger.info("height : {} ,width : {}", height, width);
 
-            clear_arr = shar.Clear(array, 17, width, height);
+            clear_arr = sharpenImage.Clear(array, 17, width, height);
 
-            filter_arr = gf.orientation(clear_arr, width, height, 17, 7);
+            filter_arr = gf.orientation(clear_arr, width, height, 17, 6);
             long endtime = System.currentTimeMillis();
             logger.info("Time taken to enhance image : {}", (endtime - process));
-            BufferedImage enhancedImage = shar.arr_img(filter_arr, width, height);
+            BufferedImage enhancedImage = sharpenImage.arr_img(filter_arr, width, height);
+            BufferedImage binarizing = sharpenImage.binarizing(enhancedImage, filter_arr);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(enhancedImage, "bmp", baos);
+            ImageIO.write(binarizing, "bmp", baos);
             return baos.toByteArray();
 
 
@@ -58,5 +51,6 @@ public class GaborFilter {
             return null;
         }
     }
+
 
 }

@@ -62,10 +62,13 @@ public class sharpen_image {
         int[] black = new int[]{0, 0, 0};
         int[] white = new int[]{255, 255, 255};
         int i, j;
+        int rightSpace=width-25;
+        int lefetSpace=25;
         float mean = mean(array, width, height);
-        //img_arr = new int[width][height];
         for (i = 0; i < width; i++) {
+
             for (j = 0; j < height; j++) {
+
                 int clr = img.getRGB(i, j);
                 int red = (clr & 0x00ff0000) >> 16;
                 if (red > mean) {
