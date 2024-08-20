@@ -6,9 +6,11 @@ import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.Response.LoginResponse;
 import com.management.studentattendancesystem.base.rest.model.UserDetailsCred;
+import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.rest.model.request.LoginRequest;
 import com.management.studentattendancesystem.base.jwt.JwtService;
 import com.management.studentattendancesystem.base.service.AuthService;
+import com.management.studentattendancesystem.base.service.InstitutionService;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private InstitutionService institutionService;
 
 
 
@@ -74,9 +79,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<GenericResponse> registerUser(com.dox.ail.base.rest.model.User registrationRequest) {
 
+        GenericResponse genericResponse = new GenericResponse();
+        if (null != registrationRequest.getInstitutionId()) {
+            genericResponse = institutionService.validateInstitution(registrationRequest.getInstitutionId());
+            if ("FAILED".equalsIgnoreCase(genericResponse.getStatus())) {
+                return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+            }
+        }
+
         Optional<User> userById = userRepository.findByEmailAndStatusActive(registrationRequest.getEmail());
 
-        GenericResponse genericResponse = new GenericResponse();
         if (userById.isPresent()) {
             genericResponse.setStatus(Constants.FAILED);
             genericResponse.setMessage("Email already exist !!!");

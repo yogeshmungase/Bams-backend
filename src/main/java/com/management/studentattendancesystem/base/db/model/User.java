@@ -33,7 +33,7 @@ public class User extends ControlFields implements Serializable {
     @Column(name = "mobile")
     private String mobile;
 
-    @Column(name = "institutionId")
+    @Column(name = "institution_id")
     private String institutionId;
 
     @Column(name = "status")

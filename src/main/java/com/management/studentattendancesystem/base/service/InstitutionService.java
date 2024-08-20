@@ -1,6 +1,7 @@
 package com.management.studentattendancesystem.base.service;
 
 import com.management.studentattendancesystem.base.db.model.Institution;
+import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -16,4 +17,5 @@ public interface InstitutionService {
 
     ResponseEntity<List<InstitutionDTO>> getAllInstitutionDetails();
 
+    GenericResponse validateInstitution(String institutionId);
 }

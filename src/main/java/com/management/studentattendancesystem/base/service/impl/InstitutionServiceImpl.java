@@ -2,10 +2,13 @@ package com.management.studentattendancesystem.base.service.impl;
 
 import com.management.studentattendancesystem.base.db.model.Institution;
 import com.management.studentattendancesystem.base.repository.InstitutionRepository;
+import com.management.studentattendancesystem.base.repository.UserRepository;
 import com.management.studentattendancesystem.base.rest.controller.AuthController;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
+import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.service.InstitutionService;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class InstitutionServiceImpl implements InstitutionService {
 
     @Autowired
     private InstitutionRepository institutionRepository;
+
+    private UserRepository userRepository;
 
 
     @Override
@@ -70,5 +75,34 @@ public class InstitutionServiceImpl implements InstitutionService {
             return new ResponseEntity<>(institutionDTOS, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public GenericResponse validateInstitution(String institutionId) {
+        Institution institution = institutionRepository.findByInstitutionIdAndStatus(institutionId, "Active");
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setStatus("FAILED");
+        if (null != institution) {
+            if (!institution.isUserCreationAllowed()) {
+                genericResponse.setMessage("User creation is not allowed for this institution. Please contact admin");
+                return genericResponse;
+            }
+
+            Integer userCount = userRepository.getTotalUserAgainstInstitutionId(institutionId, Constants.ACTIVE);
+            logger.info("user count {} and configured user count : {} against Institution : {}", userCount, institution.getAllowedUser(), institutionId);
+            if (null != userCount && userCount < institution.getAllowedUser()) {
+                genericResponse.setStatus("SUCCESS");
+                genericResponse.setMessage("Institution validated successfully");
+
+            } else {
+                genericResponse.setMessage("User creation count exceeded for institution");
+            }
+            return genericResponse;
+
+        } else {
+            genericResponse.setStatus("FAILED");
+            genericResponse.setMessage("Institution is not active. Please contact admin");
+        }
+        return genericResponse;
     }
 }
