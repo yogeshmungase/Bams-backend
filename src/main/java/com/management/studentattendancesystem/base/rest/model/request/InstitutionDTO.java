@@ -10,7 +10,7 @@ public class InstitutionDTO {
 
     private boolean userCreationAllowed;
 
-    private boolean enabled;
+    private String status;
 
     public String getInstitutionId() {
         return institutionId;
@@ -44,11 +44,22 @@ public class InstitutionDTO {
         this.userCreationAllowed = userCreationAllowed;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public String getStatus() {
+        return status;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "InstitutionDTO{" +
+                "institutionId='" + institutionId + '\'' +
+                ", institutionName='" + institutionName + '\'' +
+                ", allowedUser=" + allowedUser +
+                ", userCreationAllowed=" + userCreationAllowed +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

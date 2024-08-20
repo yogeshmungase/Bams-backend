@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(value = "/api/v1/amdil/roles")
+@RequestMapping(value = "/api/v1/sas/roles")
 public class RoleController implements RolesApi {
 
 

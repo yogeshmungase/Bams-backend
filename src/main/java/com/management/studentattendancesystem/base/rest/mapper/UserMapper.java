@@ -1,10 +1,12 @@
 package com.management.studentattendancesystem.base.rest.mapper;
 
 import com.management.studentattendancesystem.base.db.model.Batch;
+import com.management.studentattendancesystem.base.db.model.Institution;
 import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.db.model.User;
 import com.management.studentattendancesystem.base.imgenhancer.GaborFilter;
 import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
+import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
@@ -19,8 +21,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -331,6 +331,26 @@ public class UserMapper {
         logger.info("Inside mapBatchDetails() with details : {}", batchDTO);
         return batch;
 
+    }
+
+    public static InstitutionDTO getInstitutionDTO(Institution institution) {
+        InstitutionDTO institutionDTO = new InstitutionDTO();
+        institutionDTO.setInstitutionName(institution.getInstitutionName());
+        institutionDTO.setInstitutionId(institution.getInstitutionId());
+        institutionDTO.setAllowedUser(institution.getAllowedUser());
+        institutionDTO.setUserCreationAllowed(institution.isUserCreationAllowed());
+        institutionDTO.setStatus(institution.getStatus());
+        return institutionDTO;
+    }
+
+    public static Institution getInstitution(InstitutionDTO institutiondto) {
+        Institution institution = new Institution();
+        institution.setInstitutionName(institutiondto.getInstitutionName());
+        institution.setInstitutionId(institutiondto.getInstitutionId());
+        institution.setAllowedUser(institutiondto.getAllowedUser());
+        institution.setUserCreationAllowed(institutiondto.isUserCreationAllowed());
+        institution.setStatus(institutiondto.getStatus());
+        return institution;
     }
 }
 

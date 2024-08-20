@@ -14,14 +14,14 @@ public class Institution {
     @Column(name = "institution_name")
     private String institutionName;
 
-    @Column(name = "allowedUser")
+    @Column(name = "allowed_user")
     private Integer allowedUser;
 
     @Column(name = "user_creation_allowed")
     private boolean userCreationAllowed;
 
-    @Column(name = "is_active")
-    private boolean enabled;
+    @Column(name = "status")
+    private String status;
 
 
     public Institution() {
@@ -51,12 +51,12 @@ public class Institution {
         this.allowedUser = allowedUser;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public String getStatus() {
+        return status;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public boolean isUserCreationAllowed() {
@@ -74,7 +74,7 @@ public class Institution {
                 ", institutionName='" + institutionName + '\'' +
                 ", allowedUser=" + allowedUser +
                 ", userCreationAllowed=" + userCreationAllowed +
-                ", enabled=" + enabled +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

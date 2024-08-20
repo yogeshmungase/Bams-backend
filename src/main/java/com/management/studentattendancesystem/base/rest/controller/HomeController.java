@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/api/v1/amdil")
+@RequestMapping(value = "/api/v1/sas")
 public class HomeController {
 
     private static Logger logger = LoggerFactory.getLogger(HomeController.class);

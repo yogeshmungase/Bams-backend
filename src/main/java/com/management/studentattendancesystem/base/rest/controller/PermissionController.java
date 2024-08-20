@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping(value = "/api/v1/amdil/permissions")
+@RequestMapping(value = "/api/v1/sas/permissions")
 public class PermissionController implements PermissionsApi {
 
 

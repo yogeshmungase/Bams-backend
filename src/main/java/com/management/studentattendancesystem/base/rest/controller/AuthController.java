@@ -19,18 +19,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/api/v1/sas/auth")
 public class AuthController {
 
-    private static Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+        logger.info("Inside loginUser() with details : {}", loginRequest);
         return authService.loginUser(loginRequest);
     }
 
     @PostMapping("/register")
     public ResponseEntity<GenericResponse> registerUser(@RequestBody User registrationRequest) {
+        logger.info("Inside registerUser() with details : {}", registrationRequest);
         return authService.registerUser(registrationRequest);
     }
 }
