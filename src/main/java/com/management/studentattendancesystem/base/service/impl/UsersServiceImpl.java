@@ -2,6 +2,7 @@ package com.management.studentattendancesystem.base.service.impl;
 
 import com.management.studentattendancesystem.base.repository.UserRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
+import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.service.UsersService;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Role;
@@ -33,16 +34,20 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<User> createUser(User userRequest) {
-        Optional<com.management.studentattendancesystem.base.db.model.User> userById = userRepository.findByEmailAndStatusActive(userRequest.getEmail());
-        if (userById.isPresent()) {
-            return new ResponseEntity<>(userRequest, HttpStatus.BAD_REQUEST);
+        Optional<com.management.studentattendancesystem.base.db.model.User> userByEmail = userRepository.findByEmailAndStatusActive(userRequest.getEmail());
+        Optional<com.management.studentattendancesystem.base.db.model.User> userByMobile = userRepository.findByUserNameAndStatusActive(userRequest.getUsername());
+        if (userByEmail.isPresent() || userByMobile.isPresent()) {
+            logger.error("User already present against");
+            return new ResponseEntity<>(userRequest, HttpStatus.OK);
         }
 
         com.management.studentattendancesystem.base.db.model.User user = UserMapper.convertToDBUser(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        userRequest.setPassword(user.getPassword());
         user.setStatus(Constants.ACTIVE);
         userRepository.save(user);
         logger.info("Mapped User After save: {}", user);
+
         return new ResponseEntity<>(userRequest, HttpStatus.CREATED);
     }
 
@@ -58,11 +63,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByStatus(Constants.ACTIVE);
+    public ResponseEntity<List<User>> getAllUsers(String institutionId) {
+        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByStatusAndInstitutionId(Constants.ACTIVE, institutionId);
         if (!CollectionUtils.isEmpty(allUser)) {
             return new ResponseEntity<>(UserMapper.convertToModelUsers(allUser), HttpStatus.OK);
         }
+        logger.warn("No Users found against institutionId :{}", institutionId);
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NO_CONTENT);
     }
 
@@ -71,11 +77,10 @@ public class UsersServiceImpl implements UsersService {
         com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), Constants.ACTIVE);
 
         if (null == dbUser) {
-            return new ResponseEntity<>(userRequest, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(userRequest, HttpStatus.BAD_REQUEST);
         }
 
         List<com.management.studentattendancesystem.base.db.model.Role> dbRoleList = new ArrayList<>();
-
         for (Role role : userRequest.getRoles()) {
             com.management.studentattendancesystem.base.db.model.Role dbRole = new com.management.studentattendancesystem.base.db.model.Role(role.getName());
             dbRole.setId(Long.valueOf(role.getId()));
@@ -83,6 +88,7 @@ public class UsersServiceImpl implements UsersService {
         }
         dbUser.setRoles(dbRoleList);
         userRepository.save(dbUser);
+        logger.info("User updated successfully with details userId : {}", userId);
         return new ResponseEntity<>(userRequest, HttpStatus.OK);
     }
 

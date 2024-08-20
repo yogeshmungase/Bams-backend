@@ -37,8 +37,10 @@ public class UserMapper {
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
         user.setEmail(userRequest.getEmail());
-        user.setFirstName("");
-        user.setLastName("");
+        user.setMobile(userRequest.getMobile());
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(user.getLastName());
+        user.setInstitutionId(user.getInstitutionId());
         setUserRoles(user, userRequest);
         return user;
     }
@@ -48,6 +50,12 @@ public class UserMapper {
         com.dox.ail.base.rest.model.User user = new com.dox.ail.base.rest.model.User();
         user.setUsername(dbUser.getUsername());
         user.setPassword(dbUser.getPassword());
+        user.setFirstName(dbUser.getFirstName());
+        user.setLastName(dbUser.getLastName());
+        user.setMobile(dbUser.getMobile());
+        user.setEmail(dbUser.getEmail());
+        user.setStatus(dbUser.getStatus());
+        user.setInstitutionId(dbUser.getInstitutionId());
         user.setEmail(dbUser.getEmail());
         setModelUserRoles(user, dbUser);
         return user;
@@ -60,8 +68,12 @@ public class UserMapper {
             com.dox.ail.base.rest.model.User user = new com.dox.ail.base.rest.model.User();
             user.setId(String.valueOf(dbUser.getId()));
             user.setUsername(dbUser.getUsername());
+            user.setFirstName(dbUser.getFirstName());
+            user.setLastName(dbUser.getLastName());
             user.setPassword(dbUser.getPassword());
             user.setEmail(dbUser.getEmail());
+            user.setMobile(dbUser.getMobile());
+            user.setStatus(dbUser.getStatus());
            /* user.setCreatedAt(OffsetDateTime.from(dbUser.getCreatedAt()));
             user.setUpdatedAt(OffsetDateTime.from(dbUser.getUpdatedAt()));*/
             setModelUserRoles(user, dbUser);

@@ -14,8 +14,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "Select * from users where email = :email and status = 'Active' LIMIT 1", nativeQuery = true)
     Optional<User> findByEmailAndStatusActive(String email);
+    @Query(value = "Select * from users where username = :username and status = 'Active' LIMIT 1", nativeQuery = true)
+    Optional<User> findByUserNameAndStatusActive(String username);
 
     List<User> findAllByStatus(String active);
 
     User findByIdAndStatus(Long id,String status);
+
+    List<User> findAllByStatusAndInstitutionId(String active,String institutionId);
 }

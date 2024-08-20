@@ -1,5 +1,6 @@
 package com.management.studentattendancesystem.base.rest.controller;
 
+import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.service.UsersService;
 import com.dox.ail.base.rest.UsersApi;
 import com.dox.ail.base.rest.model.User;
@@ -16,46 +17,42 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/api/v1/sas/users")
-public class UserController implements UsersApi {
+public class UserController {
 
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UsersService usersService;
 
-    @Override
-    public Optional<NativeWebRequest> getRequest() {
-        return UsersApi.super.getRequest();
-    }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        logger.info("Inside createUser() with details : {}",user);
         return usersService.createUser(user);
     }
 
 
     @DeleteMapping("/{userId}")
-    @Override
     public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userid) {
+        logger.info("Inside deleteUser() with details : {}",userid);
         return usersService.deleteUser(userid);
     }
 
-    @GetMapping
-    @Override
-    public ResponseEntity<List<User>> getUsers() {
-
-        return usersService.getAllUsers();
+    @GetMapping("/inst/{institutionId}")
+    public ResponseEntity<List<User>> getUsersAgainstInstitutionId(@PathVariable("institutionId") String institutionId) {
+        logger.info("Inside getUsersAgainstInstitutionId() with details : {}",institutionId);
+        return usersService.getAllUsers(institutionId);
     }
 
     @GetMapping("/{userId}")
-    @Override
     public ResponseEntity<User> getUserById(@PathVariable("userId") String userId) {
+        logger.info("Inside getUserById() with details : {}", userId);
         return usersService.getUserById(userId);
     }
 
-    @Override
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(String userId, User user) {
+        logger.info("Inside updateUser() with details userId: {}, and details : {}", userId,user );
         return usersService.updateUser(userId, user);
     }
 }

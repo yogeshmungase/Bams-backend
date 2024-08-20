@@ -298,10 +298,29 @@ components:
         email:
           type: string
           example: "johndoe@example.com"
+        firstName:
+          type: string
+          example: "john"
+        lastName:
+          type: string
+          example: "Dow"
+        mobile:
+          type: string
+          example: "7878787788"
+        status:
+          type: string
+          example: "7878787788"
+        institutionId:
+          type: string
+          example: "4010"
         roles:
           type: array
           items:
             $ref: '#/components/schemas/Role'
+        createdBy:
+          type: string
+        updatedBy:
+          type: string
         createdAt:
           type: string
           format: date-time

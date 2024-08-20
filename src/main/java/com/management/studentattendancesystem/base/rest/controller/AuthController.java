@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/api/v1/amdil/auth")
+@RequestMapping(value = "/api/v1/sas/auth")
 public class AuthController {
 
     private static Logger logger = LoggerFactory.getLogger(AuthController.class);

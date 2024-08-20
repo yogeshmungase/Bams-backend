@@ -1,8 +1,6 @@
 package com.management.studentattendancesystem.base.db.model;
 
 
-import com.management.studentattendancesystem.base.db.model.ControlFields;
-import com.management.studentattendancesystem.base.db.model.Role;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -32,6 +30,12 @@ public class User extends ControlFields implements Serializable {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "mobile")
+    private String mobile;
+
+    @Column(name = "institutionId")
+    private String institutionId;
+
     @Column(name = "status")
     private String status;
 
@@ -41,6 +45,10 @@ public class User extends ControlFields implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+
+    public User() {
+        super();
+    }
 
     public Long getId() {
         return id;
@@ -106,8 +114,20 @@ public class User extends ControlFields implements Serializable {
         this.roles = roles;
     }
 
-    public User(){
-        super();
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getInstitutionId() {
+        return institutionId;
+    }
+
+    public void setInstitutionId(String institutionId) {
+        this.institutionId = institutionId;
     }
 
     @Override
@@ -119,6 +139,8 @@ public class User extends ControlFields implements Serializable {
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", institutionId='" + institutionId + '\'' +
                 ", status='" + status + '\'' +
                 ", roles=" + roles +
                 '}';
