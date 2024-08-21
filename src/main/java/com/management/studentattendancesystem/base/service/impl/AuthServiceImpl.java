@@ -1,14 +1,13 @@
 package com.management.studentattendancesystem.base.service.impl;
 
 import com.management.studentattendancesystem.base.db.model.User;
+import com.management.studentattendancesystem.base.jwt.JwtService;
 import com.management.studentattendancesystem.base.repository.UserRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.Response.LoginResponse;
 import com.management.studentattendancesystem.base.rest.model.UserDetailsCred;
-import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.rest.model.request.LoginRequest;
-import com.management.studentattendancesystem.base.jwt.JwtService;
 import com.management.studentattendancesystem.base.service.AuthService;
 import com.management.studentattendancesystem.base.service.InstitutionService;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
@@ -32,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -47,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
     private InstitutionService institutionService;
 
 
-
     @Override
     public ResponseEntity<LoginResponse> loginUser(LoginRequest loginRequest) {
         Authentication authenticate = null;
@@ -55,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (AuthenticationException exception) {
-            logger.error("Exception occur while authentication : {}",exception.getMessage());
+            logger.error("Exception occur while authentication : {}", exception.getMessage());
             loginResponse.setStatus(Constants.FAILED);
             loginResponse.setMessage(Constants.LOGIN_FAILED);
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
@@ -83,6 +81,7 @@ public class AuthServiceImpl implements AuthService {
         if (null != registrationRequest.getInstitutionId()) {
             genericResponse = institutionService.validateInstitution(registrationRequest.getInstitutionId());
             if ("FAILED".equalsIgnoreCase(genericResponse.getStatus())) {
+                logger.error("New registration failed due to error : {}", genericResponse);
                 return new ResponseEntity<>(genericResponse, HttpStatus.OK);
             }
         }
@@ -92,7 +91,7 @@ public class AuthServiceImpl implements AuthService {
         if (userById.isPresent()) {
             genericResponse.setStatus(Constants.FAILED);
             genericResponse.setMessage("Email already exist !!!");
-        }else {
+        } else {
             User user = UserMapper.convertToDBUser(registrationRequest);
             logger.info("Mapped User : {}", user);
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
@@ -102,7 +101,6 @@ public class AuthServiceImpl implements AuthService {
             genericResponse.setStatus(Constants.SUCCESS);
             genericResponse.setMessage("User Registered successfully");
         }
-
 
         return new ResponseEntity<>(genericResponse, HttpStatus.OK);
     }

@@ -2,7 +2,8 @@ package com.management.studentattendancesystem.base.db.model;
 
 import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 @Entity
 @Table(name = "batch")
