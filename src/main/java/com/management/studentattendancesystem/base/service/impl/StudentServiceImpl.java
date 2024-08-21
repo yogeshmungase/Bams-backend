@@ -16,6 +16,8 @@ import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTOPagination;
+import com.management.studentattendancesystem.base.utils.constants.Constants;
+import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -101,6 +104,7 @@ public class StudentServiceImpl implements StudentService {
                 studentDTO.setEmail(student.getEmail());
                 studentDTO.setMobile(student.getMobile());
                 studentDTO.setAddress(student.getAddress());
+                studentDTO.setActive(student.isActive());
                 if (null != student.getThumb1()) {
                     studentDTO.setThumb1(Base64.getEncoder().encodeToString(student.getThumb1()));
                 }
@@ -170,21 +174,17 @@ public class StudentServiceImpl implements StudentService {
 
         // if limit is zero then set limit and offset
         if (limit == 0) {
-            limit = 10;
+            limit = 30;
             if (offset > 0) {
                 offset = 0;
             }
         }
-
-        String sortBy = "id";
-        Pageable paging = PageRequest.of(offset, limit);
-        logger.info("pagination : {}",paging);
-
-        List<Student> studentList = studentRepository.findAllByBatchId(batchId,paging);
-        if (!CollectionUtils.isEmpty(studentList)) {
+        List<Tuple> allByBatchIdAndIsActive = studentRepository.findAllByBatchIdAndIsActive(batchId, Boolean.TRUE.booleanValue());
+        if (!CollectionUtils.isEmpty(allByBatchIdAndIsActive)) {
             StudentDTOPagination studentDTOPagination = new StudentDTOPagination();
-            studentDTOPagination.setStudentDTOS(UserMapper.getStudentDTO(studentList));
-            setPaginationParameter(studentDTOPagination, offset, limit, batchId);
+            studentDTOPagination.setStudentDTOS(UserMapper.getStudentDTOFromTuple(allByBatchIdAndIsActive));
+            studentDTOPagination.setTotalRecords(allByBatchIdAndIsActive.size());
+            // setPaginationParameter(studentDTOPagination, offset, limit, batchId);
             return new ResponseEntity<>(studentDTOPagination, HttpStatus.OK);
         } else {
             logger.error("No student details found against batchId : {}", batchId);

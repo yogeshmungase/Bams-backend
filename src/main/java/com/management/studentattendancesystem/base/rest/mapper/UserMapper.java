@@ -11,6 +11,7 @@ import com.management.studentattendancesystem.base.rest.model.request.StudentDTO
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Permission;
 import com.dox.ail.base.rest.model.Role;
+import jakarta.persistence.Tuple;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -351,6 +352,31 @@ public class UserMapper {
         institution.setUserCreationAllowed(institutiondto.isUserCreationAllowed());
         institution.setStatus(institutiondto.getStatus());
         return institution;
+    }
+
+    public static List<StudentDTO> getStudentDTOFromTuple(List<Tuple> allByBatchIdAndIsActive) {
+        List<StudentDTO> studentDTOS = new ArrayList<>();
+
+        try {
+            for (Tuple tuple : allByBatchIdAndIsActive) {
+                StudentDTO dto = new StudentDTO();
+                dto.setStudentId(tuple.get(0, Long.class));
+                dto.setStudentAttendanceId(tuple.get(1, String.class));
+                dto.setBatchId(tuple.get(2, Long.class));
+                dto.setFirstName(tuple.get(3, String.class));
+                dto.setMiddleName(tuple.get(4, String.class));
+                dto.setLastName(tuple.get(5, String.class));
+                dto.setEmail(tuple.get(6, String.class));
+                dto.setMobile(tuple.get(7, String.class));
+                dto.setAddress(tuple.get(8, String.class));
+                dto.setActive(tuple.get(9, Boolean.class));
+                studentDTOS.add(dto);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return studentDTOS;
     }
 }
 

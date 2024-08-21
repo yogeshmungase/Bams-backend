@@ -24,6 +24,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByStatusAndInstitutionId(String active,String institutionId);
 
-    @Query(value = "SELECT COUNT (id) from users where institution_id= :institutionId and status = 'Active'", nativeQuery = true)
+    @Query(value = "SELECT COUNT (id) from users where institution_id= :institutionId and status = :status", nativeQuery = true)
     Integer getTotalUserAgainstInstitutionId(@Param("institutionId") String institutionId,@Param("status") String status);
 }
