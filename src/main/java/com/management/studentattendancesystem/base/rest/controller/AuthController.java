@@ -6,6 +6,7 @@ import com.management.studentattendancesystem.base.rest.model.Response.LoginResp
 import com.management.studentattendancesystem.base.rest.model.request.LoginRequest;
 import com.management.studentattendancesystem.base.service.AuthService;
 import com.dox.ail.base.rest.model.User;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         logger.info("Inside loginUser() with details : {}", loginRequest);
         return authService.loginUser(loginRequest);
     }

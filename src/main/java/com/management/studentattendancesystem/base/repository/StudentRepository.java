@@ -19,7 +19,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "SELECT COUNT (student_id) from student where batch_id= :batchId and ", nativeQuery = true)
     Integer getTotalStudentCountAgainstBatch(@Param("batchId") Long batchId);
 
-
     @Query(value = "SELECT student_id, " +
             "student_attendance_id, batch_id, first_name, middle_name, last_name, email, mobile, address, is_active "+
             "FROM student "+

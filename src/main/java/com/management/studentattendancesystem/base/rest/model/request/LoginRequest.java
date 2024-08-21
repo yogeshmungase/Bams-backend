@@ -1,9 +1,16 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
 
+    @Valid
+    @NotBlank(message = "email field is mandatory")
     private String email;
 
+    @Valid
+    @NotBlank(message = "password field is mandatory")
     private String password;
 
     public String getEmail() {
@@ -22,5 +29,6 @@ public class LoginRequest {
         this.password = password;
     }
 
-
+    public LoginRequest() {
+    }
 }
