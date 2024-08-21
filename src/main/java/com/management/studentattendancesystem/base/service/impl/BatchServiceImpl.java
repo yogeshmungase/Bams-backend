@@ -1,12 +1,10 @@
 package com.management.studentattendancesystem.base.service.impl;
 
 import com.management.studentattendancesystem.base.db.model.Batch;
-import com.management.studentattendancesystem.base.db.model.User;
 import com.management.studentattendancesystem.base.repository.BatchRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
-import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.service.BatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +29,7 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public ResponseEntity<GenericResponse> createBatch(BatchDTO batchDTO) {
 
-        Batch batchByName = batchRepository.findTop1ByBatchNameAndEnabled(batchDTO.getBatchName(), Boolean.TRUE.booleanValue());
+        Batch batchByName = batchRepository.findTop1ByBatchNameAndEnabledAndInstitutionId(batchDTO.getBatchName(), Boolean.TRUE.booleanValue(),batchDTO.getInstitutionId());
         GenericResponse genericResponse = new GenericResponse();
         if (null != batchByName) {
             genericResponse.setStatus("FAILED");
@@ -113,8 +111,8 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public ResponseEntity<List<BatchDTO>> getAllBatchDetails() {
-        List<Batch> batches = batchRepository.findAllByEnabled(Boolean.TRUE.booleanValue());
+    public ResponseEntity<List<BatchDTO>> getAllBatchDetails(String institutionId) {
+        List<Batch> batches = batchRepository.findAllByEnabledAndInstitutionId(Boolean.TRUE.booleanValue(),institutionId);
         List<BatchDTO> batchDTOS = new ArrayList<>();
         if (!CollectionUtils.isEmpty(batches)) {
             for (Batch batch : batches) {

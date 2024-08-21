@@ -12,5 +12,7 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
 
     Batch findTop1ByBatchNameAndEnabled(String batchName, boolean status);
 
-    List<Batch> findAllByEnabled(boolean status);
+    List<Batch> findAllByEnabledAndInstitutionId(boolean status,String institutionId);
+
+    Batch findTop1ByBatchNameAndEnabledAndInstitutionId(String batchName, boolean status, String institutionId);
 }

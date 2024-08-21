@@ -15,6 +15,6 @@ public interface BatchService {
 
     ResponseEntity<BatchDTO> getBatchDetailAgainstBatchId(Long batchId);
 
-    ResponseEntity<List<BatchDTO>> getAllBatchDetails();
+    ResponseEntity<List<BatchDTO>> getAllBatchDetails(String institutionId);
 
 }

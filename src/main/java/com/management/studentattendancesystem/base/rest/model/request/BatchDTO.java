@@ -1,6 +1,7 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 
@@ -8,7 +9,10 @@ import java.util.Date;
 public class BatchDTO {
 
     private Long id;
+
+    @NotBlank
     private String batchName;
+
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;
@@ -16,6 +20,7 @@ public class BatchDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date endDate;
 
+    @NotBlank
     private String institutionId;
 
     private boolean enabled;
