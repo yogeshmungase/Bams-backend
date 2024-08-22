@@ -95,7 +95,7 @@ public class InstitutionServiceImpl implements InstitutionService {
                 genericResponse.setMessage("Institution validated successfully");
 
             } else {
-                genericResponse.setMessage("User creation count exceeded for institution");
+                genericResponse.setMessage("User creation count exceeded for institution . Please contact admin");
             }
             return genericResponse;
 

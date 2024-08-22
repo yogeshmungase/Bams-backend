@@ -83,6 +83,90 @@ public class sharpen_image {
         return image;
     }
 
+    public int[] getCropWidth(BufferedImage img, int[][] array) {
+
+        int width = img.getWidth(null);
+        int height = img.getHeight(null);
+        int[] widthArray = new int[2];
+        int i, j;
+        float mean = mean(array, width, height);
+        int blackPixelCount = 0;
+        int whitePixelCount = 0;
+        int cropWidthLeft = 0;
+        int cropWidthRight = 0;
+        for (i = 0; i < width; i++) {
+            for (j = 0; j < height; j++) {
+                int clr = img.getRGB(i, j);
+                int red = (clr & 0x00ff0000) >> 16;
+                if (red > mean) {
+                    blackPixelCount++;
+                } else {
+                    whitePixelCount++;
+                }
+            }
+
+
+            if (i <= 75) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 150) {
+                    cropWidthLeft = i;
+                }
+            }
+
+            if (i >= (width - 75)) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 150) {
+                    // take fist one
+                    if (cropWidthRight == 0) {
+                        cropWidthRight = i;
+                    }
+                }
+            }
+
+            whitePixelCount = 0;
+            blackPixelCount = 0;
+
+        }
+        widthArray[0] = cropWidthLeft;
+        widthArray[1] = cropWidthRight;
+
+        return widthArray;
+    }
+
+    public BufferedImage binarizingWithWidth(BufferedImage img, int[][] array, int[] cropWidth) {
+        int width = img.getWidth(null);
+        int height = img.getHeight(null);
+        int leftCropWidth = cropWidth[0];
+        int rightCropWidth = cropWidth[1];
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        WritableRaster raster = image.getRaster();
+        int[] black = new int[]{0, 0, 0};
+        int[] white = new int[]{255, 255, 255};
+        int i, j;
+        float mean = mean(array, width, height);
+        for (i = 0; i < width; i++) {
+
+            for (j = 0; j < height; j++) {
+
+                // white pixel draw
+                if (i <= leftCropWidth || i >= rightCropWidth) {
+                    raster.setPixel(i, j, white);
+                    continue;
+                }
+
+                // normal image draw
+                int clr = img.getRGB(i, j);
+                int red = (clr & 0x00ff0000) >> 16;
+                if (red > mean) {
+                    raster.setPixel(i, j, black);
+
+                } else {
+                    raster.setPixel(i, j, white);
+                }
+            }
+        }
+
+        return image;
+    }
+
     public int[][] processImage(int[][] array, int width, int height) {
         float mean = mean(array, width, height);
         float var = variance(array, mean, width, height);
@@ -211,10 +295,7 @@ public class sharpen_image {
     public BufferedImage arr_img(int[][] array, int width, int height) {
 
         BufferedImage bImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        System.out.println("color :"+bImage.getGraphics().getColor());
         WritableRaster raster = bImage.getRaster();
-
-
         for (int i = 50; i < width + 50; i++) {
             for (int j = 50; j < height + 50; j++) {
                 int[] color = new int[]{array[j][i], array[j][i], array[j][i]};
@@ -250,17 +331,16 @@ public class sharpen_image {
     }
 
     public int[][] Clear(int[][] array, int Block_size, int width, int height) {
-        int[][] mean_block = new int[(int) (height / Block_size) + 1][(int) (width / Block_size) + 1];
+        int[][] mean_block = new int[(height / Block_size) + 1][(width / Block_size) + 1];
 
         mean_blocks_int(array, mean_block, 17, width, height);
 
         for (int i = 50; i < width + 50; i++) {
             for (int j = 50; j < height + 50; j++) {
 
-                if ((mean_block[(int) ((j - 50) / Block_size)][(int) ((i - 50) / Block_size)] - array[j][i]) > 0)
+                if ((mean_block[(j - 50) / Block_size][(i - 50) / Block_size] - array[j][i]) > 0)
                     array[j][i] = 255;
                 else array[j][i] = 0;
-
 
             }
         }

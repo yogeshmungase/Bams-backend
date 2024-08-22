@@ -1,6 +1,8 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class StudentDTO {
 
@@ -9,7 +11,6 @@ public class StudentDTO {
     @NotBlank(message = "studentAttendanceId is mandatory ")
     private String studentAttendanceId;
 
-    @NotBlank(message = "BatchId is mandatory ")
     private Long batchId;
 
     @NotBlank(message = "firstName is mandatory ")

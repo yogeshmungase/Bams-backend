@@ -10,54 +10,6 @@
                 width: 485px;
             }
 
-            .blue-heading-block {
-                border: 1px #00008B;
-                background-color: #00008B;
-                font-size: 15px;
-                color: white;
-                padding:1px 8px;
-                margin-top:18px;
-                margin-bottom:18px;
-                line-height: 25px;
-            }
-            .red-heading-block {
-                border: 1px #F44336;
-                background-color: #F44336;
-                font-size: 15px;
-                color: white;
-                padding:1px 8px;
-                margin-top:18px;
-                margin-bottom:18px;
-                line-height: 25px;
-            }
-            .black-heading-block {
-                border: 1px black;
-                background-color: black;
-                font-size: 15px;
-                color: white;
-                padding:1px 8px;
-                margin-bottom:06px;
-                line-height: 25px;
-            }
-            .box {
-                height: 25px;
-                width: 25px;
-                padding: 0px 0px;
-                font-size: 15px;
-                text-align: center;
-                border: 1px solid #1c2973;
-            }
-            .box-gap {
-                height: 22px;
-                width: 22px;
-                padding: 0px 0px;
-                font-size: 15px;
-                text-align: center;
-                border: none;
-            }
-            span:first-of-type {
-                margin-left: 10px;
-            }
             body {
                 width:920px;
                 height:1122px;
@@ -73,83 +25,11 @@
             table {
                 margin:10px;
             }
-            th, td {
-                text-align: left;
-                font-size: 12px;
-                color: #16161b;
-            }
-            input[type="checkbox"] {
-                width: 15px;
-                height: 15px;
-            }
+
             .content-label {
                 display: block;
                 font-size: 13px;
-                padding-right:  ;
-            }
-
-            .checkbox-label{
-              font-size: 15px;
-            }
-            .left-margin {
-                margin-left: 10px;
-            }
-            input[type=checkbox], input[type=radio] {
-                vertical-align: middle;
-                position: relative;
-                bottom: 1px;
-            }
-            input[type=radio] {
-                bottom: 2px;
-            }
-            .table-personal td {
-                text-align:right;
-            }
-            .table-personal {
-                margin-top:0px;
-            }
-            .border-bottom {
-                border-bottom: 1px solid #00008B;
-            }
-            .border-right {
-                border-right: 1px solid #00008B;
-                padding-right:4px;
-            }
-            input {
-                border:none;
-                border-bottom: 1px solid #00008B;
-                background:#ffffff;
-                margin-bottom:2px;
-            }
-            table.product-details td {
-                border : 1px solid #00008B;
-                padding:2px 10px;
-            }
-            li {
-
-                font-size: 15px;
-                line-height: 14px;
-                margin-bottom: 5px;
-            }
-            .heading-label-size{
-                font-size: 19px;
-            }
-            .big-space{
-                margin-bottom: 60px;
-                margin-top: 60px;
-            }
-            .medium-space{
-               margin-bottom: 20px;
-               margin-top: 20px;
-            }
-            .below-space{
-                margin-bottom: 16px;
-            }
-            .margin-top{
-                margin-top: 7px;
-            }
-            .top-margin-table{
-             margin-top: 7px;
+                word-wrap: break-word;
             }
         </style>
     </head>
@@ -164,43 +44,47 @@
 
                         <table width="100%">
                                 <tr>
-                                    <td width="25%">
-                                        <img src="data:image/bmp;base64,$thumbDetails.thumb1" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                    <td width="25%" style="text-align:center;">
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb1" width="140" height="140" align="center" alt="Paste Photo " style="border: none" />
                                     </td>
-                                    <td width="25%">
-                                        <img src="data:image/bmp;base64,$thumbDetails.thumb2" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                    <td width="25%" style="text-align:center;">
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb2" width="140" height="140" align="center" alt="Paste Photo " style="border: none" />
                                     </td>
-                                    <td width="25%">
-                                        <img src="data:image/bmp;base64,$thumbDetails.thumb3" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
+                                    <td width="25%" style="text-align:center;">
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb3" width="140" height="140" align="center" alt="Paste Photo " style="border: none;" />
                                     </td>
-                                    <td width="25%">
-                                        <img src="data:image/bmp;base64,$thumbDetails.thumb4" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none;" />
+                                    <td width="25%" style="text-align:center;">
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb4" width="140" height="140" align="center" alt="Paste Photo " style="border: none;" />
                                     </td>
-                                    <td width="25%">
-                                        <img src="data:image/bmp;base64,$thumbDetails.thumb5" width="150" height="140" align="center" alt="Paste Photo here and sign across it such that your Signature" style="border: none" />
+                                    <td width="25%" style="text-align:center;">
+                                        <img src="data:image/bmp;base64,$thumbDetails.thumb5" width="140" height="140" align="center" alt="Paste Photo" style="border: none" />
                                     </td>
 
                                 </tr>
                                 <tr>
-                                    <td width="25%">
-                                        <label class="content-label">$thumbDetails.nameWithAttendanceId (1)</label>
+                                    <td width="25%" style="text-align:center">
+                                        <label class="content-label">$thumbDetails.name <br> $thumbDetails.attendanceId (1)</label>
                                     </td>
-                                    <td width="25%">
-                                        <label class="content-label">$thumbDetails.nameWithAttendanceId (2)</label>
+                                    <td width="25%" style="text-align:center">
+                                        <label class="content-label">$thumbDetails.name <br> $thumbDetails.attendanceId (2)</label>
                                     </td>
-                                    <td width="25%">
-                                        <label class="content-label">$thumbDetails.nameWithAttendanceId (3)</label>
+                                    <td width="25%" style="text-align:center">
+                                        <label class="content-label">$thumbDetails.name <br> $thumbDetails.attendanceId (3)</label>
                                     </td>
-                                    <td width="25%">
-                                        <label class="content-label">$thumbDetails.nameWithAttendanceId (4)</label>
+                                  <td width="25%" style="text-align:center">
+                                        <label class="content-label">$thumbDetails.name <br> $thumbDetails.attendanceId (4)</label>
                                     </td>
-                                    <td width="25%">
-                                        <label class="content-label">$thumbDetails.nameWithAttendanceId (5)</label>
+                                   <td width="25%" style="text-align:center">
+                                        <label class="content-label">$thumbDetails.name <br> $thumbDetails.attendanceId (5)</label>
                                     </td>
 
                                 </tr>
                             </table>
                             #set ($boxCounter=$boxCounter+1)
+                            #if ($boxCounter==8 || $boxCounter==16 || $boxCounter==24 || $boxCounter==32)
+                                <table style="margin-top:20px;">
+                                 </table>
+                            #end
                     #end
 
                 #end

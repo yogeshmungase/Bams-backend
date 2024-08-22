@@ -294,12 +294,12 @@ public class UserMapper {
                 stringBuilder.append(student.getFirstName()).append(" ");
             }
             if (!StringUtils.isEmpty(student.getLastName())) {
-                stringBuilder.append(student.getLastName()).append("-");
+                stringBuilder.append(student.getLastName()).append(" - ");
             }
             if (!StringUtils.isEmpty(student.getStudentAttendanceId())) {
-                stringBuilder.append(student.getStudentAttendanceId());
+              studentThumbProperties.setAttendanceId(student.getStudentAttendanceId());
             }
-            studentThumbProperties.setNameWithAttendanceId(stringBuilder.toString());
+            studentThumbProperties.setName(stringBuilder.toString());
             studentThumbPropertiesList.add(studentThumbProperties);
         }
         studentThumbDetails.setThumbPropertiesList(studentThumbPropertiesList);

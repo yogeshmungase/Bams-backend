@@ -8,7 +8,9 @@ public class StudentThumbProperties {
     private String thumb4;
     private String thumb5;
 
-    private String nameWithAttendanceId;
+    private String name;
+
+    private String attendanceId;
 
     public String getThumb1() {
         return thumb1;
@@ -50,18 +52,27 @@ public class StudentThumbProperties {
         this.thumb5 = thumb5;
     }
 
-    public String getNameWithAttendanceId() {
-        return nameWithAttendanceId;
+    public String getName() {
+        return name;
     }
 
-    public void setNameWithAttendanceId(String nameWithAttendanceId) {
-        this.nameWithAttendanceId = nameWithAttendanceId;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAttendanceId() {
+        return attendanceId;
+    }
+
+    public void setAttendanceId(String attendanceId) {
+        this.attendanceId = attendanceId;
     }
 
     @Override
     public String toString() {
         return "StudentThumbProperties{" +
-                ", nameWithAttendanceId='" + nameWithAttendanceId + '\'' +
+                ", name='" + name + '\'' +
+                ", attendanceId='" + attendanceId + '\'' +
                 '}';
     }
 }

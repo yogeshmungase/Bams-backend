@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class GaborFilter {
 
@@ -33,24 +32,24 @@ public class GaborFilter {
 
             long process = System.currentTimeMillis();
 
-            logger.info("height : {} ,width : {}", height, width);
-
             clear_arr = sharpenImage.Clear(array, 17, width, height);
 
-            filter_arr = gf.orientation(clear_arr, width, height, 17, 6);
-            long endtime = System.currentTimeMillis();
-            logger.info("Time taken to enhance image : {}", (endtime - process));
+            filter_arr = gf.orientation(clear_arr, width, height, 17, 7);
             BufferedImage enhancedImage = sharpenImage.arr_img(filter_arr, width, height);
-            BufferedImage binarizing = sharpenImage.binarizing(enhancedImage, filter_arr);
+            int[] cropWidth = sharpenImage.getCropWidth(enhancedImage, filter_arr);
+
+            BufferedImage binarizing = sharpenImage.binarizingWithWidth(enhancedImage, filter_arr, cropWidth);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(binarizing, "bmp", baos);
+            long endtime = System.currentTimeMillis();
+            logger.info("Time taken to enhance image : {}", (endtime - process));
             return baos.toByteArray();
 
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            logger.error("Error occured while enhancing image with probable cause : {}", e.getMessage());
             return null;
         }
     }
-
 
 }
