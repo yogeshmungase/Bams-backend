@@ -16,7 +16,6 @@ import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTOPagination;
-import com.management.studentattendancesystem.base.utils.constants.Constants;
 import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import org.apache.velocity.Template;
@@ -24,9 +23,6 @@ import org.apache.velocity.VelocityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,7 +38,7 @@ import java.util.Optional;
 @Transactional
 public class StudentServiceImpl implements StudentService {
 
-    private static Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
 
     @Autowired
     private StudentRepository studentRepository;
@@ -50,6 +46,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ResponseEntity<StudentDTO> registerStudent(StudentDTO studentDto) {
         try {
+            logger.info("inside the register student with details : {}", studentDto);
             Student student = new Student();
             student.setFirstName(studentDto.getFirstName());
             student.setMiddleName(studentDto.getMiddleName());
@@ -59,7 +56,7 @@ public class StudentServiceImpl implements StudentService {
             student.setEmail(studentDto.getEmail());
             student.setBatchId(studentDto.getBatchId());
             student.setStudentAttendanceId(studentDto.getStudentAttendanceId());
-            student.setActive(true);
+            student.setActive(Boolean.TRUE.booleanValue());
 
             if (null != studentDto.getThumb1()) {
                 student.setThumb1(Base64.getDecoder().decode(studentDto.getThumb1()));
@@ -83,7 +80,7 @@ public class StudentServiceImpl implements StudentService {
             studentDto.setActive(student.isActive());
             return new ResponseEntity<>(studentDto, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception occured while registering student with probable cause : {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -105,6 +102,7 @@ public class StudentServiceImpl implements StudentService {
                 studentDTO.setMobile(student.getMobile());
                 studentDTO.setAddress(student.getAddress());
                 studentDTO.setActive(student.isActive());
+                studentDTO.setStudentId(student.getId());
                 if (null != student.getThumb1()) {
                     studentDTO.setThumb1(Base64.getEncoder().encodeToString(student.getThumb1()));
                 }
@@ -181,6 +179,7 @@ public class StudentServiceImpl implements StudentService {
         }
         List<Tuple> allByBatchIdAndIsActive = studentRepository.findAllByBatchIdAndIsActive(batchId, Boolean.TRUE.booleanValue());
         if (!CollectionUtils.isEmpty(allByBatchIdAndIsActive)) {
+            logger.info("Student count against BatchId : {} is : {}", batchId, allByBatchIdAndIsActive.size());
             StudentDTOPagination studentDTOPagination = new StudentDTOPagination();
             studentDTOPagination.setStudentDTOS(UserMapper.getStudentDTOFromTuple(allByBatchIdAndIsActive));
             studentDTOPagination.setTotalRecords(allByBatchIdAndIsActive.size());
@@ -205,7 +204,7 @@ public class StudentServiceImpl implements StudentService {
                 studentDTOPagination.setNextOffset(nextOffset);
                 studentDTOPagination.setNextLimit(studentDTOPagination.getPageSize());
                 studentDTOPagination.setNextPagesAvailable(true);
-            }else{
+            } else {
                 studentDTOPagination.setNextOffset(0);
                 studentDTOPagination.setNextLimit(0);
                 studentDTOPagination.setNextPagesAvailable(false);
@@ -234,8 +233,8 @@ public class StudentServiceImpl implements StudentService {
 
         List<Student> studentList = studentRepository.findAllByBatchId(batchId);
         if (!CollectionUtils.isEmpty(studentList)) {
-            logger.info("Student record count is :{} against Batch Id is : {} ",studentList.size(),batchId);
-            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList,imageType);
+            logger.info("Student record count is :{} against Batch Id is : {} ", studentList.size(), batchId);
+            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList, imageType);
             String studentThumbHtmlDocument = getStudentThumbHtmlDocument(studentThumbDetails, "templates/Thumb.vm");
 
             byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm");

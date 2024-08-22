@@ -40,8 +40,8 @@ public class UserMapper {
         user.setEmail(userRequest.getEmail());
         user.setMobile(userRequest.getMobile());
         user.setFirstName(userRequest.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setInstitutionId(user.getInstitutionId());
+        user.setLastName(userRequest.getLastName());
+        user.setInstitutionId(userRequest.getInstitutionId());
         setUserRoles(user, userRequest);
         return user;
     }
@@ -325,7 +325,7 @@ public class UserMapper {
     public static Batch mapBatchDetails(BatchDTO batchDTO) {
         Batch batch = new Batch();
         batch.setBatchName(batchDTO.getBatchName());
-        batch.setEnabled(true);
+        batch.setEnabled(Boolean.TRUE.booleanValue());
         batch.setStartDate(batchDTO.getStartDate());
         batch.setEndDate(batchDTO.getEndDate());
         batch.setInstitutionId(batchDTO.getInstitutionId());

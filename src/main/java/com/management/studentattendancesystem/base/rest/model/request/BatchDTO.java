@@ -13,7 +13,6 @@ public class BatchDTO {
     @NotBlank
     private String batchName;
 
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;
 

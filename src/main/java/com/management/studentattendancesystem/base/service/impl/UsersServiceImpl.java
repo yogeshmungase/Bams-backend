@@ -3,6 +3,7 @@ package com.management.studentattendancesystem.base.service.impl;
 import com.management.studentattendancesystem.base.repository.UserRepository;
 import com.management.studentattendancesystem.base.rest.mapper.UserMapper;
 import com.management.studentattendancesystem.base.rest.model.Response.GenericResponse;
+import com.management.studentattendancesystem.base.service.InstitutionService;
 import com.management.studentattendancesystem.base.service.UsersService;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
 import com.dox.ail.base.rest.model.Role;
@@ -31,16 +32,29 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private InstitutionService institutionService;
+
 
     @Override
-    public ResponseEntity<User> createUser(User userRequest) {
+    public ResponseEntity<GenericResponse> createUser(User userRequest) {
+
+        GenericResponse genericResponse = new GenericResponse();
+        if (null != userRequest.getInstitutionId()) {
+            genericResponse = institutionService.validateInstitution(userRequest.getInstitutionId());
+            if ("FAILED".equalsIgnoreCase(genericResponse.getStatus())) {
+                logger.error("New registration failed due to error : {}", genericResponse);
+                return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+            }
+        }
         Optional<com.management.studentattendancesystem.base.db.model.User> userByEmail = userRepository.findByEmailAndStatusActive(userRequest.getEmail());
         Optional<com.management.studentattendancesystem.base.db.model.User> userByMobile = userRepository.findByUserNameAndStatusActive(userRequest.getUsername());
         if (userByEmail.isPresent() || userByMobile.isPresent()) {
             logger.error("User already present against");
-            return new ResponseEntity<>(userRequest, HttpStatus.OK);
+            genericResponse.setMessage("Email or userName already exist !!!!");
+            genericResponse.setStatus("FAILED");
+            return new ResponseEntity<>(genericResponse, HttpStatus.OK);
         }
-
         com.management.studentattendancesystem.base.db.model.User user = UserMapper.convertToDBUser(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         userRequest.setPassword(user.getPassword());
@@ -48,7 +62,10 @@ public class UsersServiceImpl implements UsersService {
         userRepository.save(user);
         logger.info("Mapped User After save: {}", user);
 
-        return new ResponseEntity<>(userRequest, HttpStatus.CREATED);
+        genericResponse.setStatus("SUCCESS");
+        genericResponse.setMessage("User created successfully");
+
+        return new ResponseEntity<>(genericResponse, HttpStatus.CREATED);
     }
 
     @Override

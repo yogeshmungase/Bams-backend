@@ -26,7 +26,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<GenericResponse> createUser(@RequestBody User user) {
         logger.info("Inside createUser() with details : {}",user);
         return usersService.createUser(user);
     }

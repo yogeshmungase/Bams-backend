@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UsersService {
-    ResponseEntity<User> createUser(User user);
+    ResponseEntity<GenericResponse> createUser(User user);
 
     ResponseEntity<Void> deleteUser(String userId);
 

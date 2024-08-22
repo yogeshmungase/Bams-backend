@@ -3,6 +3,7 @@ package com.management.studentattendancesystem.base.rest.controller;
 
 import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.service.InstitutionService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class InstitutionController {
 
 
     @PostMapping
-    public ResponseEntity<InstitutionDTO> addInstitution(@RequestBody InstitutionDTO dto) {
+    public ResponseEntity<InstitutionDTO> addInstitution(@Valid @RequestBody InstitutionDTO dto) {
         logger.info("Inside addInstitution() with details : {}", dto);
         return institutionService.addInstitution(dto);
     }

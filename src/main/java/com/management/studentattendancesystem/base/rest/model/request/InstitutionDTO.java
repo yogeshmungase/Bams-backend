@@ -1,15 +1,20 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class InstitutionDTO {
 
+    @NotBlank
     private String institutionId;
 
+    @NotBlank
     private String institutionName;
 
     private Integer allowedUser;
 
     private boolean userCreationAllowed;
 
+    @NotBlank
     private String status;
 
     public String getInstitutionId() {

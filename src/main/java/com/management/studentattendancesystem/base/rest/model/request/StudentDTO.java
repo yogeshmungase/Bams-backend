@@ -1,16 +1,24 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class StudentDTO {
 
     private Long studentId;
 
+    @NotBlank(message = "studentAttendanceId is mandatory ")
     private String studentAttendanceId;
+
+    @NotBlank(message = "BatchId is mandatory ")
     private Long batchId;
 
+    @NotBlank(message = "firstName is mandatory ")
     private String firstName;
 
+    @NotBlank(message = "middleName is mandatory ")
     private String middleName;
 
+    @NotBlank(message = "lastName is mandatory ")
     private String lastName;
 
     private String email;
@@ -21,13 +29,19 @@ public class StudentDTO {
 
     private boolean active;
 
+    @NotBlank(message = "thumb1 is mandatory ")
     private String thumb1;
 
+    @NotBlank(message = "thumb2 is mandatory ")
     private String thumb2;
 
+    @NotBlank(message = "thumb3 is mandatory ")
     private String thumb3;
 
+    @NotBlank(message = "thumb4 is mandatory ")
     private String thumb4;
+
+    @NotBlank(message = "thumb5 is mandatory ")
     private String thumb5;
 
     public Long getStudentId() {

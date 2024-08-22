@@ -6,25 +6,24 @@ import com.management.studentattendancesystem.base.rest.model.Response.GenericRe
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTOPagination;
 import com.management.studentattendancesystem.base.service.impl.StudentService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/api/v1/sas/student")
 public class StudentController {
 
-    private static Logger logger = LoggerFactory.getLogger(StudentController.class);
+    private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     @Autowired
     private StudentService studentService;
 
     @PostMapping
-    public ResponseEntity<StudentDTO> registerStudent(@RequestBody StudentDTO student) {
+    public ResponseEntity<StudentDTO> registerStudent(@RequestBody @Valid StudentDTO student) {
         logger.info("ENTER StudentController:createStudent() with details {}", student);
         return studentService.registerStudent(student);
     }
@@ -53,7 +52,7 @@ public class StudentController {
     @GetMapping("/pdf/{batchId}/{imageType}")
     public ResponseEntity<Document> getStudentThumbPdf(@PathVariable("batchId") Long batchId, @PathVariable("imageType") String imageType) {
         logger.info("ENTER StudentController:getStudentThumbPdf() with details batchId :{} and {}", batchId, imageType);
-        return studentService.getStudentThumbPdfAgainstBatch(batchId,imageType);
+        return studentService.getStudentThumbPdfAgainstBatch(batchId, imageType);
     }
 
     @PostMapping("/enhanceImage")
