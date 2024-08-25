@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +22,8 @@ public class GaborFilter {
             img = ImageIO.read(byteArrayInputStream);
             int width = img.getWidth(null);
             int height = img.getHeight(null);
+            Graphics2D g2d = img.createGraphics();
+            g2d.drawImage(img, 0 + width, 0, -width, height, null);
             sharpen_image sharpenImage = new sharpen_image();
 
             int[][] array = null;

@@ -28,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Base64;
@@ -250,6 +252,17 @@ public class StudentServiceImpl implements StudentService {
             if (null != base64String) {
                 document.setStatus("SUCCESS");
                 document.setBase64Code(base64String);
+
+                try {
+                    File file = new File("sthumb.pdf");
+                    FileOutputStream fop = new FileOutputStream(file);
+
+                    fop.write(bytes);
+                    fop.flush();
+                    fop.close();
+                } catch (Exception e) {
+
+                }
             }
             return new ResponseEntity<>(document, HttpStatus.OK);
         }

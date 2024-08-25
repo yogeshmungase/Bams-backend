@@ -19,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.StringUtils;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -312,9 +313,14 @@ public class UserMapper {
     public static String getBitMapBase64String(byte[] bytes) {
         ByteArrayOutputStream baos = null;
         try {
-            BufferedImage enhancedImage = ImageIO.read(new ByteArrayInputStream(bytes));
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+            Graphics2D g2d = image.createGraphics();
+            int width = image.getWidth(null);
+            int height = image.getHeight(null);
+            //flip the image horizontally
+            g2d.drawImage(image, 0 + width, 0, -width, height, null);
             baos = new ByteArrayOutputStream();
-            ImageIO.write(enhancedImage, "bmp", baos);
+            ImageIO.write(image, "bmp", baos);
             return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (Exception e) {
             logger.error("Exception occur during to get getBitMapBase64String");

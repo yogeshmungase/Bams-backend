@@ -29,6 +29,7 @@ public class InstitutionServiceImpl implements InstitutionService {
     @Autowired
     private InstitutionRepository institutionRepository;
 
+    @Autowired
     private UserRepository userRepository;
 
 
