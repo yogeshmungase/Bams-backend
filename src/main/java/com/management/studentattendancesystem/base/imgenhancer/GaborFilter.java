@@ -33,6 +33,8 @@ public class GaborFilter {
             estimate gf = new estimate();
             array = sharpenImage.img_arr(img);
 
+            sharpenImage.Normalize(array,width,height);
+
             long process = System.currentTimeMillis();
 
             clear_arr = sharpenImage.Clear(array, 17, width, height);

@@ -82,8 +82,7 @@
                             </table>
 
                             #if ($boxCounter==7 || $boxCounter==14 || $boxCounter==21 || $boxCounter==28)
-                                <table style="margin-top:20px;">
-                                 </table>
+                                <pd4ml:page.break>
                             #end
                             #set ($boxCounter=$boxCounter+1)
                     #end
