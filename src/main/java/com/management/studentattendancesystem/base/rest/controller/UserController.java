@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<User> updateUser(String userId, User user) {
+    public ResponseEntity<User> updateUser(@PathVariable("userId")String userId, @RequestBody User user) {
         logger.info("Inside updateUser() with details userId: {}, and details : {}", userId,user );
         return usersService.updateUser(userId, user);
     }
