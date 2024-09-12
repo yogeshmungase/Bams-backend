@@ -27,16 +27,16 @@ public class BatchController {
         return batchService.createBatch(batchDTO);
     }
 
-    @PutMapping
-    public ResponseEntity<BatchDTO> editBatch(@RequestBody BatchDTO batchDTO) {
+    @PutMapping("/{batchId}")
+    public ResponseEntity<BatchDTO> editBatch(@PathVariable("batchId") Long batchId,@RequestBody BatchDTO batchDTO) {
         logger.info("ENTER StudentController:editBatch() with details {}", batchDTO);
-        return batchService.editBatch(batchDTO);
+        return batchService.editBatch(batchId,batchDTO);
     }
 
-    @GetMapping("/{batchId}/{status}")
-    public ResponseEntity<GenericResponse> changeBatchStatus(@PathVariable("batchId") Long batchId, @PathVariable("status") boolean status) {
-        logger.info("ENTER StudentController:changeBatchStatus() with details batchId : {} and status :{}", batchId, status);
-        return batchService.changeBatchStatus(batchId, status);
+    @DeleteMapping("/{batchId}")
+    public ResponseEntity<GenericResponse> softDeleteBatch(@PathVariable("batchId") Long batchId) {
+        logger.info("ENTER StudentController:softDeleteBatch() with details batchId : {}",batchId );
+        return batchService.softDeleteBatch(batchId);
     }
 
     @GetMapping("/{batchId}")

@@ -9,7 +9,7 @@ import java.util.List;
 public interface BatchService {
     ResponseEntity<GenericResponse> createBatch(BatchDTO batchDTO);
 
-    ResponseEntity<BatchDTO> editBatch(BatchDTO batchDTO);
+    ResponseEntity<BatchDTO> editBatch(Long batchId, BatchDTO batchDTO);
 
     ResponseEntity<GenericResponse> changeBatchStatus(Long batchId, boolean status);
 
@@ -17,4 +17,5 @@ public interface BatchService {
 
     ResponseEntity<List<BatchDTO>> getAllBatchDetails(String institutionId);
 
+    ResponseEntity<GenericResponse> softDeleteBatch(Long batchId);
 }

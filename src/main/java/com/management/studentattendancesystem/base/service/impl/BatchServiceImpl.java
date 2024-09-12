@@ -47,14 +47,15 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public ResponseEntity<BatchDTO> editBatch(BatchDTO batchDTO) {
+    public ResponseEntity<BatchDTO> editBatch(Long batchId, BatchDTO batchDTO) {
 
-        Optional<Batch> batchById = batchRepository.findById(batchDTO.getId());
+        Optional<Batch> batchById = batchRepository.findById(batchId);
         if (batchById.isPresent()) {
             Batch batch = batchById.get();
             batch.setBatchName(batch.getBatchName());
             batch.setStartDate(batchDTO.getStartDate());
             batch.setEndDate(batchDTO.getEndDate());
+            batch.setStatus(batchDTO.getStatus());
             batchRepository.save(batch);
             logger.info("Batch details edited successfully for batch name : {}", batchDTO.getBatchName());
             return new ResponseEntity<>(batchDTO, HttpStatus.OK);
@@ -84,6 +85,26 @@ public class BatchServiceImpl implements BatchService {
             batchRepository.save(batch);
             logger.info("Batch status : {} saves successfully against batchId : {}", batchStatus, batchById);
 
+            return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+
+        } else {
+            logger.error("No batch found against batchId : {}", batchId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<GenericResponse> softDeleteBatch(Long batchId) {
+        Optional<Batch> batchById = batchRepository.findById(batchId);
+
+        GenericResponse genericResponse = new GenericResponse();
+        if (batchById.isPresent()) {
+            Batch batch = batchById.get();
+            batch.setEnabled(Boolean.FALSE.booleanValue());
+            batchRepository.save(batch);
+            genericResponse.setMessage("Batch deleted successfully !!");
+            genericResponse.setStatus("SUCCESS");
+            logger.info("Batch  : {} soft deleted successfully {}", batch.getBatchName());
             return new ResponseEntity<>(genericResponse, HttpStatus.OK);
 
         } else {
@@ -123,6 +144,7 @@ public class BatchServiceImpl implements BatchService {
                 batchDTO.setEndDate(batch.getEndDate());
                 batchDTO.setInstitutionId(batch.getInstitutionId());
                 batchDTO.setEnabled(batch.isEnabled());
+                batchDTO.setStatus(batch.getStatus());
                 batchDTOS.add(batchDTO);
             }
             return new ResponseEntity<>(batchDTOS, HttpStatus.OK);

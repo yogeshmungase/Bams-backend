@@ -26,6 +26,10 @@ public class Batch {
     @Column(name = "endDate")
     private Date endDate;
 
+
+    @Column(name = "status")
+    private String status;
+
     @Column(name = "is_active")
     private boolean enabled;
 
@@ -81,6 +85,15 @@ public class Batch {
         this.institutionId = institutionId;
     }
 
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Batch{" +
@@ -89,6 +102,7 @@ public class Batch {
                 ", batchName='" + batchName + '\'' +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", status='" + status + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

@@ -335,6 +335,7 @@ public class UserMapper {
         batch.setStartDate(batchDTO.getStartDate());
         batch.setEndDate(batchDTO.getEndDate());
         batch.setInstitutionId(batchDTO.getInstitutionId());
+        batch.setStatus(Constants.IN_PROCESS);
         logger.info("Inside mapBatchDetails() with details : {}", batchDTO);
         return batch;
 

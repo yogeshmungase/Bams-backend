@@ -5,6 +5,9 @@ public class Constants {
     public static final String SUCCESS = "SUCCESS";
 
     public static final String FAILED = "FAILED";
+    public static final String IN_PROCESS = "IN_PROCESS";
+
+    public static final String COMPLETED = "COMPLETED";
 
     public static final String LOGIN_SUCCESSFULLY = "Login successfully";
     public static final String LOGIN_FAILED = "The username or password is incorrect";
