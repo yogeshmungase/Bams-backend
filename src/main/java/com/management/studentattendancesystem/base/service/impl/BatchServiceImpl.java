@@ -52,7 +52,7 @@ public class BatchServiceImpl implements BatchService {
         Optional<Batch> batchById = batchRepository.findById(batchId);
         if (batchById.isPresent()) {
             Batch batch = batchById.get();
-            batch.setBatchName(batch.getBatchName());
+            batch.setBatchName(batchDTO.getBatchName());
             batch.setStartDate(batchDTO.getStartDate());
             batch.setEndDate(batchDTO.getEndDate());
             batch.setStatus(batchDTO.getStatus());

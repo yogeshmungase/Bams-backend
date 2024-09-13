@@ -8,6 +8,7 @@ import com.management.studentattendancesystem.base.db.model.Student;
 import com.management.studentattendancesystem.base.factory.HtmlToPdfConverter;
 import com.management.studentattendancesystem.base.factory.TemplateFactory;
 import com.management.studentattendancesystem.base.imgenhancer.GaborFilter;
+import com.management.studentattendancesystem.base.imgenhancer.ImageProcessingExecutor;
 import com.management.studentattendancesystem.base.repository.StudentRepository;
 import com.management.studentattendancesystem.base.rest.mapper.Document;
 import com.management.studentattendancesystem.base.rest.mapper.StudentThumbDetails;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StopWatch;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -233,40 +235,41 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType) {
 
+        Document document = null;
+        String base64String = null;
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         List<Student> studentList = studentRepository.findAllByBatchId(batchId);
         if (!CollectionUtils.isEmpty(studentList)) {
             logger.info("Student record count is :{} against Batch Id is : {} ", studentList.size(), batchId);
-            StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList, imageType);
+            //StudentThumbDetails studentThumbDetails = UserMapper.getStudentThumbDetails(studentList, imageType);
+            StudentThumbDetails studentThumbDetails = ImageProcessingExecutor.processData(studentList, imageType);
             String studentThumbHtmlDocument = getStudentThumbHtmlDocument(studentThumbDetails, "templates/Thumb.vm");
 
             byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm");
-            String base64String = null;
             if (null != bytes) {
                 //encode pdf bytes to base64
                 base64String = new String(Base64.getEncoder().encode(bytes));
             }
-            Document document = new Document();
+            document = new Document();
             document.setDocId("A101");
             document.setDocName("StudentThumbPDF");
             document.setStatus("FAILED");
             if (null != base64String) {
                 document.setStatus("SUCCESS");
                 document.setBase64Code(base64String);
-
-                try {
-                    File file = new File("sthumb.pdf");
-                    FileOutputStream fop = new FileOutputStream(file);
-
-                    fop.write(bytes);
-                    fop.flush();
-                    fop.close();
-                } catch (Exception e) {
-
-                }
             }
-            return new ResponseEntity<>(document, HttpStatus.OK);
+
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        stopWatch.stop();
+        logger.info("Time taken to generate PDF is : {}", stopWatch.getTotalTimeSeconds());
+
+        if (document != null & base64String != null) {
+            return new ResponseEntity<>(document, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
     }
 
