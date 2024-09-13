@@ -26,12 +26,24 @@ public class Role extends ControlFields implements Serializable {
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "inst_roles")
+    private Collection<Institution> institutions;
+
     @ManyToMany
     @JoinTable(name = "role_permissions",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private Collection<Permission> permissions;
 
+
+    public Collection<Institution> getInstitutions() {
+        return institutions;
+    }
+
+    public void setInstitutions(Collection<Institution> institutions) {
+        this.institutions = institutions;
+    }
 
     public Role() {
         super();

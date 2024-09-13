@@ -50,6 +50,12 @@ public class RoleController implements RolesApi {
         return rolesService.getRoleById(roleId);
     }
 
+    @GetMapping("inst/{instId}")
+    public ResponseEntity<List<Role>> getRoles(@PathVariable(value = "instId") String instId) {
+        logger.info("ENTER RoleController:getRoles()");
+        return rolesService.getRoles(instId);
+    }
+
     @GetMapping
     @Override
     public ResponseEntity<List<Role>> getRoles() {

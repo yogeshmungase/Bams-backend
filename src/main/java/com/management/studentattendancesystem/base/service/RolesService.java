@@ -12,7 +12,9 @@ public interface RolesService {
 
     ResponseEntity<Role> getRoleById(String roleId);
 
-    ResponseEntity<List<Role>> getRoles();
+    ResponseEntity<List<Role>> getRoles(String instId);
 
     ResponseEntity<Role> updateRole(String roleId, Role role);
+
+    ResponseEntity<List<Role>> getRoles();
 }

@@ -201,7 +201,7 @@ public class UserMapper {
 
     }
 
-    public static List<Role> convertToRoleDtos(List<com.management.studentattendancesystem.base.db.model.Role> dbRoles) {
+    public static List<Role> convertToRoleDtos(Collection<com.management.studentattendancesystem.base.db.model.Role> dbRoles) {
 
         List<Role> rolesDtos = new ArrayList<>();
         if (!CollectionUtils.isEmpty(dbRoles)) {
@@ -348,6 +348,7 @@ public class UserMapper {
         institutionDTO.setAllowedUser(institution.getAllowedUser());
         institutionDTO.setUserCreationAllowed(institution.isUserCreationAllowed());
         institutionDTO.setStatus(institution.getStatus());
+        institutionDTO.setRoles(institution.getInst_roles());
         return institutionDTO;
     }
 

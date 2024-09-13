@@ -1,6 +1,10 @@
 package com.management.studentattendancesystem.base.rest.model.request;
 
+import com.management.studentattendancesystem.base.db.model.Role;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.Collection;
+import java.util.List;
 
 public class InstitutionDTO {
 
@@ -16,6 +20,16 @@ public class InstitutionDTO {
 
     @NotBlank
     private String status;
+
+    private Collection<Role> roles;
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
 
     public String getInstitutionId() {
         return institutionId;
