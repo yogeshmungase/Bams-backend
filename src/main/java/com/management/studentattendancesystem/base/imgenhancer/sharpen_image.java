@@ -38,7 +38,7 @@ public class sharpen_image {
         int[] black = new int[]{0, 0, 0};
         int[] white = new int[]{255, 255, 255};
         int i, j;
-        int bin_arr[][] = new int[height][width];
+        int[][] bin_arr = new int[height][width];
         //float mean = mean(img);
         //img_arr = new int[width][height];
         for (i = 0; i < width; i++) {
@@ -62,8 +62,8 @@ public class sharpen_image {
         int[] black = new int[]{0, 0, 0};
         int[] white = new int[]{255, 255, 255};
         int i, j;
-        int rightSpace=width-25;
-        int lefetSpace=25;
+        int rightSpace = width - 25;
+        int lefetSpace = 25;
         float mean = mean(array, width, height);
         for (i = 0; i < width; i++) {
 
@@ -87,13 +87,15 @@ public class sharpen_image {
 
         int width = img.getWidth(null);
         int height = img.getHeight(null);
-        int[] widthArray = new int[2];
+        int[] widthArray = new int[4];
         int i, j;
         float mean = mean(array, width, height);
         int blackPixelCount = 0;
         int whitePixelCount = 0;
         int cropWidthLeft = 0;
         int cropWidthRight = 0;
+        int cropWidthBottom = 0;
+        int cropWidthTop = 0;
         for (i = 0; i < width; i++) {
             for (j = 0; j < height; j++) {
                 int clr = img.getRGB(i, j);
@@ -103,17 +105,18 @@ public class sharpen_image {
                 } else {
                     whitePixelCount++;
                 }
+
             }
 
 
             if (i <= 75) {
-                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 150) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 170) {
                     cropWidthLeft = i;
                 }
             }
 
             if (i >= (width - 75)) {
-                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 150) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 170) {
                     // take fist one
                     if (cropWidthRight == 0) {
                         cropWidthRight = i;
@@ -125,9 +128,47 @@ public class sharpen_image {
             blackPixelCount = 0;
 
         }
+
+        for (j = 0; j < height; j++) {
+            for (i = 0; i < width; i++) {
+                int clr = img.getRGB(i, j);
+                int red = (clr & 0x00ff0000) >> 16;
+                if (red > mean) {
+                    blackPixelCount++;
+                } else {
+                    whitePixelCount++;
+                }
+
+            }
+
+
+            if (j <= 60) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 270) {
+                    cropWidthBottom = j;
+                }
+            }
+
+            if (j >= (width - 60)) {
+                if (whitePixelCount > blackPixelCount && (whitePixelCount - blackPixelCount) >= 270) {
+                    // take fist one
+                    if (cropWidthTop == 0) {
+                        cropWidthTop = j;
+                    }
+                }
+            }
+
+            whitePixelCount = 0;
+            blackPixelCount = 0;
+
+        }
         widthArray[0] = cropWidthLeft;
         widthArray[1] = cropWidthRight;
+        widthArray[2] = cropWidthBottom;
+        widthArray[3] = cropWidthTop;
 
+      /*  System.out.println("height : "+height+"width : "+width);
+        System.out.println("cropWidthLeft : "+cropWidthLeft+ " cropWidthRight : "+cropWidthRight+" cropWidthBottom:"+cropWidthBottom+" cropWidthTop:"+cropWidthTop);
+*/
         return widthArray;
     }
 
@@ -136,6 +177,8 @@ public class sharpen_image {
         int height = img.getHeight(null);
         int leftCropWidth = cropWidth[0];
         int rightCropWidth = cropWidth[1];
+        int bottomCropWidth = cropWidth[2];
+        int topCropWidth = cropWidth[3];
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         WritableRaster raster = image.getRaster();
         int[] black = new int[]{0, 0, 0};
@@ -146,8 +189,14 @@ public class sharpen_image {
 
             for (j = 0; j < height; j++) {
 
-                // white pixel draw
-                if (i <= leftCropWidth || i >= rightCropWidth) {
+                // white pixel draw for left and right side
+                if (i <= leftCropWidth || i >= rightCropWidth ) {
+                    raster.setPixel(i, j, white);
+                    continue;
+                }
+
+                // whit pixel darw for bottom and top
+                if (j <= bottomCropWidth || j >= topCropWidth ) {
                     raster.setPixel(i, j, white);
                     continue;
                 }
@@ -170,7 +219,7 @@ public class sharpen_image {
     public int[][] processImage(int[][] array, int width, int height) {
         float mean = mean(array, width, height);
         float var = variance(array, mean, width, height);
-        int arr[][] = new int[height + 100][width + 100];
+        int[][] arr = new int[height + 100][width + 100];
         if (var < 500) {
             for (int i = 50; i < height + 50; i++) {
                 for (int j = 50; j < width + 50; j++) {
@@ -220,7 +269,7 @@ public class sharpen_image {
         return (c > 255 ? 255 : (c < 0 ? 0 : c));
     }
 
-    public int[][] Normalize(int array[][], int width, int height) {
+    public int[][] Normalize(int[][] array, int width, int height) {
         int[][] arr = new int[height + 100][width + 100];
 
         float mean1 = mean(array, width, height);
@@ -358,7 +407,7 @@ public class sharpen_image {
                         mean1 = mean1 + array[j - u][i - v];
                     }
                 }
-                mean_block[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] = (int) (mean1 / (block_size * block_size));
+                mean_block[(j - 50) / block_size][(i - 50) / block_size] = (int) (mean1 / (block_size * block_size));
                 //System.out.println(array[(int)(j/17)][(int)(i/17)]);
             }
         }
@@ -376,7 +425,7 @@ public class sharpen_image {
                         mean1 = mean1 + array[j - u][i - v];
                     }
                 }
-                mean_block[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] = (int) (mean1 / (block_size * block_size));
+                mean_block[(j - 50) / block_size][(i - 50) / block_size] = mean1 / (block_size * block_size);
                 //System.out.println(array[(int)(j/17)][(int)(i/17)]);
             }
         }
@@ -388,11 +437,11 @@ public class sharpen_image {
 
         double[][] gx = new double[height + 100][width + 100];
         double[][] gy = new double[height + 100][width + 100];
-        double[][] Mx = new double[(int) (height / block_size) + 1][(int) (width / block_size) + 1];
-        double[][] My = new double[(int) (height / block_size) + 1][(int) (width / block_size) + 1];
-        double[][] stdx = new double[(int) (height / block_size) + 1][(int) (width / block_size) + 1];
-        double[][] stdy = new double[(int) (height / block_size) + 1][(int) (width / block_size) + 1];
-        double[][] grddev = new double[(int) (height / block_size) + 1][(int) (width / block_size) + 1];
+        double[][] Mx = new double[(height / block_size) + 1][(width / block_size) + 1];
+        double[][] My = new double[(height / block_size) + 1][(width / block_size) + 1];
+        double[][] stdx = new double[(height / block_size) + 1][(width / block_size) + 1];
+        double[][] stdy = new double[(height / block_size) + 1][(width / block_size) + 1];
+        double[][] grddev = new double[(height / block_size) + 1][(width / block_size) + 1];
 
         for (int r = 50; r < height + 50; r++) {
             for (int c = 50; c < width + 50; c++) {
@@ -410,17 +459,17 @@ public class sharpen_image {
                 double mean1 = 0, mean2 = 0;
                 for (int u = -(block_size / 2); u <= (block_size / 2); u++) {
                     for (int v = -(block_size / 2); v <= (block_size / 2); v++) {
-                        mean1 = mean1 + (gx[j + u][i + v] - Mx[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)]) * (gx[j + u][i + v] - Mx[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)]);
-                        mean2 = mean2 + (gy[j + u][i + v] - My[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)]) * (gy[j + u][i + v] - My[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)]);
+                        mean1 = mean1 + (gx[j + u][i + v] - Mx[(j - 50) / block_size][(i - 50) / block_size]) * (gx[j + u][i + v] - Mx[(j - 50) / block_size][(i - 50) / block_size]);
+                        mean2 = mean2 + (gy[j + u][i + v] - My[(j - 50) / block_size][(i - 50) / block_size]) * (gy[j + u][i + v] - My[(j - 50) / block_size][(i - 50) / block_size]);
 
                     }
                 }
-                stdx[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] = (Math.sqrt(mean1) / block_size);
-                stdy[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] = (Math.sqrt(mean2) / block_size);
-                grddev[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] = (stdx[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] + stdy[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)]);
+                stdx[(j - 50) / block_size][(i - 50) / block_size] = (Math.sqrt(mean1) / block_size);
+                stdy[(j - 50) / block_size][(i - 50) / block_size] = (Math.sqrt(mean2) / block_size);
+                grddev[(j - 50) / block_size][(i - 50) / block_size] = (stdx[(j - 50) / block_size][(i - 50) / block_size] + stdy[(j - 50) / block_size][(i - 50) / block_size]);
 
                 //	System.out.println(grddev[(int)((j-50)/block_size)][(int)((i-50)/block_size)]);
-                if (grddev[(int) ((j - 50) / block_size)][(int) ((i - 50) / block_size)] < 120) {
+                if (grddev[(j - 50) / block_size][(i - 50) / block_size] < 120) {
 
                     for (int u = -(block_size / 2); u <= (block_size / 2); u++) {
                         for (int v = -(block_size / 2); v <= (block_size / 2); v++) {
@@ -460,7 +509,7 @@ public class sharpen_image {
                         }
                     }
 
-                    rs = (int) (rs / 8);
+                    rs = rs / 8;
                     int red = clamp(r0 + (r0 - rs));
                     int[] colour = new int[]{red, red, red};
                     raster.setPixel(i, j, colour);
