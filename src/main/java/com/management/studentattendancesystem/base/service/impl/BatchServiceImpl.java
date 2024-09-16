@@ -56,6 +56,7 @@ public class BatchServiceImpl implements BatchService {
             batch.setStartDate(batchDTO.getStartDate());
             batch.setEndDate(batchDTO.getEndDate());
             batch.setStatus(batchDTO.getStatus());
+            batch.setCenter(batchDTO.getCenter());
             batchRepository.save(batch);
             logger.info("Batch details edited successfully for batch name : {}", batchDTO.getBatchName());
             return new ResponseEntity<>(batchDTO, HttpStatus.OK);
@@ -145,6 +146,29 @@ public class BatchServiceImpl implements BatchService {
                 batchDTO.setInstitutionId(batch.getInstitutionId());
                 batchDTO.setEnabled(batch.isEnabled());
                 batchDTO.setStatus(batch.getStatus());
+                batchDTO.setCenter(batch.getCenter());
+                batchDTOS.add(batchDTO);
+            }
+            return new ResponseEntity<>(batchDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<List<BatchDTO>> getAllBatchDetailsAgainstCenter(String center, String institutionId) {
+        List<Batch> batches = batchRepository.findAllByEnabledAndInstitutionIdAndCenter(Boolean.TRUE.booleanValue(), institutionId, center);
+        List<BatchDTO> batchDTOS = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(batches)) {
+            for (Batch batch : batches) {
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setId(batch.getId());
+                batchDTO.setBatchName(batch.getBatchName());
+                batchDTO.setStartDate(batch.getStartDate());
+                batchDTO.setEndDate(batch.getEndDate());
+                batchDTO.setInstitutionId(batch.getInstitutionId());
+                batchDTO.setEnabled(batch.isEnabled());
+                batchDTO.setStatus(batch.getStatus());
+                batchDTO.setCenter(batch.getCenter());
                 batchDTOS.add(batchDTO);
             }
             return new ResponseEntity<>(batchDTOS, HttpStatus.OK);

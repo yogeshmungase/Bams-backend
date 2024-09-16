@@ -15,7 +15,7 @@ public interface StudentService {
 
     ResponseEntity<StudentDTOPagination> getStudentListAgainstBatch(Long batchId, Integer offset, Integer limit);
 
-    ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType);
+    ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType, String password);
 
     ResponseEntity<StudentDTO> enhanceBitmapImage(StudentDTO student);
 

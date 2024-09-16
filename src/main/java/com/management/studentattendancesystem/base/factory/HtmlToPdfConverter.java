@@ -4,10 +4,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
+import org.zefer.pd4ml.PD4Constants;
 import org.zefer.pd4ml.PD4ML;
 import org.zefer.pd4ml.PD4PageMark;
 
@@ -17,6 +16,7 @@ import java.net.MalformedURLException;
 import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class HtmlToPdfConverter {
     protected static Integer userSpaceWidth =920;
 
 
-    public static byte[] generatePdfByteArray(String inputHtml, String templateName) {
+    public static byte[] generatePdfByteArray(String inputHtml, String templateName, String password) {
 
         if (StringUtils.isBlank(inputHtml)) {
             return null;
@@ -58,6 +58,12 @@ public class HtmlToPdfConverter {
                     rightValue));
             pd4ml.setHtmlWidth(userSpaceWidth);
             pd4ml.setPageSize(PD4ML.A4);
+            byte[] decodedBytes = Base64.getDecoder().decode(password.getBytes());
+            String decodedPassword = new String(decodedBytes);
+            boolean strongEncryption = true;
+            logger.info("Setting password  {} to pdf",decodedPassword);
+            int permissions = PD4Constants.AllowPrint | PD4Constants.AllowCopy;
+            pd4ml.setPermissions(decodedPassword, permissions, strongEncryption);
 
             pd4ml.render(htmlReport, baos);
 

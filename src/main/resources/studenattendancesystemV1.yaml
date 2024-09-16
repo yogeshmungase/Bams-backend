@@ -307,6 +307,9 @@ components:
         mobile:
           type: string
           example: "7878787788"
+        center:
+          type: string
+          example: "Pune"
         status:
           type: string
           example: "7878787788"

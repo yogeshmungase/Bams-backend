@@ -30,10 +30,21 @@ public class Batch {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "center")
+    private String center;
+
     @Column(name = "is_active")
     private boolean enabled;
 
     public Batch() {
+    }
+
+    public String getCenter() {
+        return center;
+    }
+
+    public void setCenter(String center) {
+        this.center = center;
     }
 
     public Long getId() {
@@ -103,6 +114,7 @@ public class Batch {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", status='" + status + '\'' +
+                ", center='" + center + '\'' +
                 ", enabled=" + enabled +
                 '}';
     }

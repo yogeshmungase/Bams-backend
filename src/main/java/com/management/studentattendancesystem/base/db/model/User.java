@@ -39,6 +39,9 @@ public class User extends ControlFields implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "center")
+    private String center;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -130,6 +133,14 @@ public class User extends ControlFields implements Serializable {
         this.institutionId = institutionId;
     }
 
+    public String getCenter() {
+        return center;
+    }
+
+    public void setCenter(String center) {
+        this.center = center;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -142,6 +153,7 @@ public class User extends ControlFields implements Serializable {
                 ", mobile='" + mobile + '\'' +
                 ", institutionId='" + institutionId + '\'' +
                 ", status='" + status + '\'' +
+                ", center='" + center + '\'' +
                 ", roles=" + roles +
                 '}';
     }

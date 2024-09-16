@@ -30,8 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Base64;
@@ -233,7 +231,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType) {
+    public ResponseEntity<Document> getStudentThumbPdfAgainstBatch(Long batchId, String imageType, String password) {
 
         Document document = null;
         String base64String = null;
@@ -246,7 +244,7 @@ public class StudentServiceImpl implements StudentService {
             StudentThumbDetails studentThumbDetails = ImageProcessingExecutor.processData(studentList, imageType);
             String studentThumbHtmlDocument = getStudentThumbHtmlDocument(studentThumbDetails, "templates/Thumb.vm");
 
-            byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm");
+            byte[] bytes = HtmlToPdfConverter.generatePdfByteArray(studentThumbHtmlDocument, "templates/Thumb.vm",password);
             if (null != bytes) {
                 //encode pdf bytes to base64
                 base64String = new String(Base64.getEncoder().encode(bytes));

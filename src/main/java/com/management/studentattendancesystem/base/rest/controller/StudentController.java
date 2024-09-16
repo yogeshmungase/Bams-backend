@@ -49,10 +49,10 @@ public class StudentController {
         return studentService.verifyStudentUsingFingerPrint(studentDto);
     }
 
-    @GetMapping("/pdf/{batchId}/{imageType}")
-    public ResponseEntity<Document> getStudentThumbPdf(@PathVariable("batchId") Long batchId, @PathVariable("imageType") String imageType) {
+    @GetMapping("/pdf/{batchId}/{imageType}/{password}")
+    public ResponseEntity<Document> getStudentThumbPdf(@PathVariable("batchId") Long batchId, @PathVariable("imageType") String imageType,@PathVariable("password") String password) {
         logger.info("ENTER StudentController:getStudentThumbPdf() with details batchId :{} and {}", batchId, imageType);
-        return studentService.getStudentThumbPdfAgainstBatch(batchId, imageType);
+        return studentService.getStudentThumbPdfAgainstBatch(batchId, imageType,password);
     }
 
     @PostMapping("/enhanceImage")

@@ -46,9 +46,15 @@ public class BatchController {
     }
 
     @GetMapping("/inst/{institutionId}")
-    public ResponseEntity<List<BatchDTO>> getAllBatchDetails(@PathVariable("") String institutionId) {
+    public ResponseEntity<List<BatchDTO>> getAllBatchDetails(@PathVariable("institutionId") String institutionId) {
         logger.info("ENTER StudentController:getAllBatchDetails()");
         return batchService.getAllBatchDetails(institutionId);
+    }
+
+    @GetMapping("/inst/{center}/{institutionId}")
+    public ResponseEntity<List<BatchDTO>> getAllBatchDetails(@PathVariable("center")String center,@PathVariable("institutionId") String institutionId) {
+        logger.info("ENTER StudentController:getAllBatchDetails()");
+        return batchService.getAllBatchDetailsAgainstCenter(center,institutionId);
     }
 
 

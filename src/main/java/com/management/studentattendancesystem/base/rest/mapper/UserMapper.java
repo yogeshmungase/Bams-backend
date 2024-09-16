@@ -43,6 +43,7 @@ public class UserMapper {
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setInstitutionId(userRequest.getInstitutionId());
+        user.setCenter(userRequest.getCenter());
         setUserRoles(user, userRequest);
         return user;
     }
@@ -78,6 +79,7 @@ public class UserMapper {
             user.setStatus(dbUser.getStatus());
            /* user.setCreatedAt(OffsetDateTime.from(dbUser.getCreatedAt()));
             user.setUpdatedAt(OffsetDateTime.from(dbUser.getUpdatedAt()));*/
+            user.setCenter(dbUser.getCenter());
             setModelUserRoles(user, dbUser);
             modelUsers.add(user);
         }
@@ -336,6 +338,7 @@ public class UserMapper {
         batch.setEndDate(batchDTO.getEndDate());
         batch.setInstitutionId(batchDTO.getInstitutionId());
         batch.setStatus(Constants.IN_PROCESS);
+        batch.setCenter(batchDTO.getCenter());
         logger.info("Inside mapBatchDetails() with details : {}", batchDTO);
         return batch;
 

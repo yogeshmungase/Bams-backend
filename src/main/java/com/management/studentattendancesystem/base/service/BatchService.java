@@ -18,4 +18,6 @@ public interface BatchService {
     ResponseEntity<List<BatchDTO>> getAllBatchDetails(String institutionId);
 
     ResponseEntity<GenericResponse> softDeleteBatch(Long batchId);
+
+    ResponseEntity<List<BatchDTO>> getAllBatchDetailsAgainstCenter(String center, String institutionId);
 }

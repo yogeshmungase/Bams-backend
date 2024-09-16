@@ -22,10 +22,12 @@ public class BatchDTO {
     @NotBlank
     private String institutionId;
 
+    private String center;
+
     private boolean enabled;
 
-
     private String status;
+
 
 
     public String getStatus() {
@@ -84,6 +86,15 @@ public class BatchDTO {
         this.institutionId = institutionId;
     }
 
+
+    public String getCenter() {
+        return center;
+    }
+
+    public void setCenter(String center) {
+        this.center = center;
+    }
+
     @Override
     public String toString() {
         return "BatchDTO{" +
@@ -92,7 +103,9 @@ public class BatchDTO {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", institutionId='" + institutionId + '\'' +
+                ", center='" + center + '\'' +
                 ", enabled=" + enabled +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
