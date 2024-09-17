@@ -31,6 +31,12 @@ public class UserController {
         return usersService.createUser(user);
     }
 
+    @PostMapping("credential/{operationType}")
+    public ResponseEntity<GenericResponse> operatePassword(@PathVariable("operationType") String operationType, @RequestBody User user) {
+        logger.info("Inside createUser() with details : {}", user);
+        return usersService.operatePassword(user,operationType);
+    }
+
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable("userId") String userid) {

@@ -57,6 +57,7 @@ public class BatchServiceImpl implements BatchService {
             batch.setEndDate(batchDTO.getEndDate());
             batch.setStatus(batchDTO.getStatus());
             batch.setCenter(batchDTO.getCenter());
+            batch.setEnabled(batchDTO.isEnabled());
             batchRepository.save(batch);
             logger.info("Batch details edited successfully for batch name : {}", batchDTO.getBatchName());
             return new ResponseEntity<>(batchDTO, HttpStatus.OK);
@@ -135,6 +136,28 @@ public class BatchServiceImpl implements BatchService {
     @Override
     public ResponseEntity<List<BatchDTO>> getAllBatchDetails(String institutionId) {
         List<Batch> batches = batchRepository.findAllByEnabledAndInstitutionId(Boolean.TRUE.booleanValue(),institutionId);
+        List<BatchDTO> batchDTOS = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(batches)) {
+            for (Batch batch : batches) {
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setId(batch.getId());
+                batchDTO.setBatchName(batch.getBatchName());
+                batchDTO.setStartDate(batch.getStartDate());
+                batchDTO.setEndDate(batch.getEndDate());
+                batchDTO.setInstitutionId(batch.getInstitutionId());
+                batchDTO.setEnabled(batch.isEnabled());
+                batchDTO.setStatus(batch.getStatus());
+                batchDTO.setCenter(batch.getCenter());
+                batchDTOS.add(batchDTO);
+            }
+            return new ResponseEntity<>(batchDTOS, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<List<BatchDTO>> getAllBatchWithoutFilter(String institutionId) {
+        List<Batch> batches = batchRepository.findAllByInstitutionId(institutionId);
         List<BatchDTO> batchDTOS = new ArrayList<>();
         if (!CollectionUtils.isEmpty(batches)) {
             for (Batch batch : batches) {

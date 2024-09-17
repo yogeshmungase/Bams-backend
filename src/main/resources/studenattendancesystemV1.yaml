@@ -295,6 +295,12 @@ components:
         password:
           type: string
           example: "password@123"
+        newPassword:
+          type: string
+          example: "password@123"
+        confirmNewPassword:
+          type: string
+          example: "password@123"
         email:
           type: string
           example: "johndoe@example.com"

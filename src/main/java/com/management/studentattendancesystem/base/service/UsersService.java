@@ -16,4 +16,6 @@ public interface UsersService {
     ResponseEntity<User> updateUser(String userId, User user);
 
     ResponseEntity<User> getUserById(String userId);
+
+    ResponseEntity<GenericResponse> operatePassword(User user, String operationType);
 }

@@ -13,10 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +33,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -81,7 +89,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<List<User>> getAllUsers(String institutionId) {
-        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByStatusAndInstitutionId(Constants.ACTIVE, institutionId);
+        List<com.management.studentattendancesystem.base.db.model.User> allUser = userRepository.findAllByInstitutionId(institutionId);
         if (!CollectionUtils.isEmpty(allUser)) {
             return new ResponseEntity<>(UserMapper.convertToModelUsers(allUser), HttpStatus.OK);
         }
@@ -91,12 +99,13 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public ResponseEntity<User> updateUser(String userId, User userRequest) {
-        com.management.studentattendancesystem.base.db.model.User dbUser = userRepository.findByIdAndStatus(Long.valueOf(userId), Constants.ACTIVE);
+        Optional<com.management.studentattendancesystem.base.db.model.User> byId = userRepository.findById(Long.valueOf(userRequest.getId()));
 
-        if (null == dbUser) {
+        if (!byId.isPresent()) {
             return new ResponseEntity<>(userRequest, HttpStatus.BAD_REQUEST);
         }
 
+        com.management.studentattendancesystem.base.db.model.User dbUser = byId.get();
         List<com.management.studentattendancesystem.base.db.model.Role> dbRoleList = new ArrayList<>();
         for (Role role : userRequest.getRoles()) {
             com.management.studentattendancesystem.base.db.model.Role dbRole = new com.management.studentattendancesystem.base.db.model.Role(role.getName());
@@ -104,6 +113,7 @@ public class UsersServiceImpl implements UsersService {
             dbRoleList.add(dbRole);
         }
         dbUser.setRoles(dbRoleList);
+        dbUser.setStatus(userRequest.getStatus());
         userRepository.save(dbUser);
         logger.info("User updated successfully with details userId : {}", userId);
         return new ResponseEntity<>(userRequest, HttpStatus.OK);
@@ -116,5 +126,62 @@ public class UsersServiceImpl implements UsersService {
             return new ResponseEntity<>(new User(), HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(UserMapper.convertToModelUser(dbUser), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<GenericResponse> operatePassword(User user, String operationType) {
+        Authentication authenticate = null;
+        GenericResponse genericResponse = new GenericResponse();
+
+        Optional<com.management.studentattendancesystem.base.db.model.User> authenticatedUser = userRepository.findByEmailAndStatusActive(user.getEmail());
+
+        String newPassword = user.getNewPassword();
+
+        if (null == newPassword || newPassword.isEmpty()
+                || !newPassword.equalsIgnoreCase(user.getConfirmNewPassword())) {
+            genericResponse.setStatus(Constants.FAILED);
+            genericResponse.setMessage(Constants.INVALID_PASSWORD);
+            return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+        }
+        if (authenticatedUser.isPresent()) {
+            if ("CHANGE".equalsIgnoreCase(operationType)) {
+
+                try {
+                    authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+                } catch (AuthenticationException exception) {
+                    logger.error("Exception occur while authentication : {}", exception.getMessage());
+                    genericResponse.setStatus(Constants.FAILED);
+                    genericResponse.setMessage(Constants.CURRENT_PASSWORD_INCORRECT);
+                    return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+                }
+
+                if (authenticate.isAuthenticated()) {
+                    com.management.studentattendancesystem.base.db.model.User dbUser = authenticatedUser.get();
+                    dbUser.setPassword(passwordEncoder.encode(user.getConfirmNewPassword()));
+                    dbUser.setUpdatedAt(LocalDateTime.now());
+                    dbUser.setUpdatedBy(user.getUpdatedBy());
+                    userRepository.save(dbUser);
+                }
+
+                genericResponse.setStatus(Constants.SUCCESS);
+                genericResponse.setMessage(Constants.PASSWORD_UPDATION_SUCCESSFULL);
+                return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+
+            } else if ("RESET".equalsIgnoreCase(operationType)) {
+
+                com.management.studentattendancesystem.base.db.model.User dbUser = authenticatedUser.get();
+                dbUser.setPassword(passwordEncoder.encode(user.getConfirmNewPassword()));
+                dbUser.setUpdatedAt(LocalDateTime.now());
+                dbUser.setUpdatedBy(user.getUpdatedBy());
+                userRepository.save(dbUser);
+
+
+                genericResponse.setStatus(Constants.SUCCESS);
+                genericResponse.setMessage(Constants.PASSWORD_UPDATION_SUCCESSFULL);
+                return new ResponseEntity<>(genericResponse, HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(genericResponse, HttpStatus.BAD_REQUEST);
     }
 }
