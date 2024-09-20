@@ -1,11 +1,9 @@
 package com.management.studentattendancesystem.base.rest.mapper;
 
-import com.management.studentattendancesystem.base.db.model.Batch;
-import com.management.studentattendancesystem.base.db.model.Institution;
-import com.management.studentattendancesystem.base.db.model.Student;
-import com.management.studentattendancesystem.base.db.model.User;
+import com.management.studentattendancesystem.base.db.model.*;
 import com.management.studentattendancesystem.base.imgenhancer.GaborFilter;
 import com.management.studentattendancesystem.base.rest.model.request.BatchDTO;
+import com.management.studentattendancesystem.base.rest.model.request.CenterDTO;
 import com.management.studentattendancesystem.base.rest.model.request.InstitutionDTO;
 import com.management.studentattendancesystem.base.rest.model.request.StudentDTO;
 import com.management.studentattendancesystem.base.utils.constants.Constants;
@@ -389,6 +387,23 @@ public class UserMapper {
         }
 
         return studentDTOS;
+    }
+
+    public static Center mapCenterFromDto(CenterDTO centerDTO) {
+        Center center= new Center();
+        center.setCenterName(centerDTO.getCenterName());
+        center.setStatus(Constants.ACTIVE);
+        center.setInstitutionId(centerDTO.getInstitutionId());
+        return center;
+    }
+
+    public static CenterDTO mapCenterToDTO(Center center) {
+        CenterDTO centerDTO = new CenterDTO();
+        centerDTO.setId(center.getId());
+        centerDTO.setCenterName(center.getCenterName());
+        centerDTO.setStatus(center.getStatus());
+        centerDTO.setInstitutionId(center.getInstitutionId());
+        return centerDTO;
     }
 }
 

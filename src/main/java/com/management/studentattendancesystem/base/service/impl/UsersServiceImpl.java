@@ -114,6 +114,10 @@ public class UsersServiceImpl implements UsersService {
         }
         dbUser.setRoles(dbRoleList);
         dbUser.setStatus(userRequest.getStatus());
+        dbUser.setFirstName(userRequest.getFirstName());
+        dbUser.setLastName(userRequest.getLastName());
+        dbUser.setMobile(userRequest.getMobile());
+        dbUser.setUsername(userRequest.getUsername());
         userRepository.save(dbUser);
         logger.info("User updated successfully with details userId : {}", userId);
         return new ResponseEntity<>(userRequest, HttpStatus.OK);
