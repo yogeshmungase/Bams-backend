@@ -11,6 +11,7 @@
     <groupId>com.management</groupId>
     <artifactId>studentattendancesystem</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>StudentAttendanceSystem</name>
     <description>Project for management of student attendance</description>
     <properties>

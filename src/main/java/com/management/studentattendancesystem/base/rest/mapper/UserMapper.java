@@ -362,6 +362,7 @@ public class UserMapper {
         institution.setAllowedUser(institutiondto.getAllowedUser());
         institution.setUserCreationAllowed(institutiondto.isUserCreationAllowed());
         institution.setStatus(institutiondto.getStatus());
+        institution.setInst_roles(institutiondto.getRoles());
         return institution;
     }
 
